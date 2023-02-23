@@ -16,26 +16,30 @@
 package egovframework.example.sample.web;
 
 import java.util.List;
-
-import egovframework.example.sample.service.EgovSampleService;
-import egovframework.example.sample.service.SampleDefaultVO;
-import egovframework.example.sample.service.SampleVO;
-
-import org.egovframe.rte.fdl.property.EgovPropertyService;
-import org.egovframe.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.egovframe.rte.fdl.property.EgovPropertyService;
+import org.egovframe.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springmodules.validation.commons.DefaultBeanValidator;
+
+import egovframework.example.sample.service.EgovSampleService;
+import egovframework.example.sample.service.MemberService;
+import egovframework.example.sample.service.SampleDefaultVO;
+import egovframework.example.sample.service.SampleVO;
 
 /**
  * @Class Name : EgovSampleController.java
@@ -56,6 +60,9 @@ import org.springmodules.validation.commons.DefaultBeanValidator;
 
 @Controller
 public class EgovSampleController {
+	
+	@Autowired
+	private MemberService memberService;
 
 	/** EgovSampleService */
 	@Resource(name = "sampleService")
@@ -99,6 +106,9 @@ public class EgovSampleController {
 		int totCnt = sampleService.selectSampleListTotCnt(searchVO);
 		paginationInfo.setTotalRecordCount(totCnt);
 		model.addAttribute("paginationInfo", paginationInfo);
+		
+		
+		
 
 		return "sample/egovSampleList";
 	}
@@ -208,5 +218,33 @@ public class EgovSampleController {
 		status.setComplete();
 		return "forward:/egovSampleList.do";
 	}
+	
+	@ResponseBody
+	@RequestMapping("/memberInsert.do")
+	public Map<String, String>ajaxMemberInsert(@RequestBody Map<String, String> map) throws Exception {
+		//public List<MemberVO>ajaxMemberInsert(MemberVO vo) throws Exception {
+		System.out.println("controller는 실행");
+		System.out.println(map);
+		return map;
+		/*try {
+		    int i = memberService.memberInsert(vo);
+		    
+		if(i>0) {
+			System.out.println("success");
+			return  memberService.memberList();
+		}else {
+			System.out.println("fail");
+			return  null;
+		}
+		}catch(Exception e) {
+			System.out.println("err");
+			e.printStackTrace();
+			return null;
+		}*/
+		
+	}
+	
+	
+
 
 }

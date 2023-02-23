@@ -23,6 +23,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
     <title><spring:message code="title.sample" /></title>
     <link type="text/css" rel="stylesheet" href="<c:url value='/css/egovframework/sample.css'/>"/>
     <script type="text/javaScript" language="javascript" defer="defer">
@@ -137,5 +138,38 @@
         	</div>
         </div>
     </form:form>
+<script type="text/javascript">
+/* 하은 작업
+    $(document).ready(function(){
+        ajaxMemberInsertCall();
+    });
+    
+    function ajaxMemberInsertCall(){
+    	let ids = 100;
+    	let testjson = {
+			    'id' : "200",
+			    'nick' : "test",
+			    'pw' : "1234",
+			    'auth' :"USER"
+			  }
+    	
+    	$.ajax({
+    		  type: 'post',
+    		  contentType: 'application/json; charset=utf-8',
+			  url : '/memberInsert.do',
+			  data : JSON.stringify(testjson),
+			 // datatype: "JSON", (생략가능)
+			  success : function(data) {
+				  console.log('ajax 통신 성공');
+				  console.log(data)
+			  }, 
+			  error : function(err){
+			    console.log(err);
+			}
+			});
+    }*/
+
+
+</script>
 </body>
 </html>

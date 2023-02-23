@@ -1,6 +1,7 @@
 package egovframework.example.sample.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.egovframe.rte.psl.dataaccess.mapper.Mapper;
 
@@ -11,7 +12,8 @@ import egovframework.example.sample.service.MemberVO;
 //인터페이스 메소드가 query id로 호출되는 방식
 public interface MemberMapper {
 	
-	List<MemberVO> memberList();
-	int memberInsert(MemberVO vo);
+	List<MemberVO> memberList() throws Exception;
+	int memberInsert(MemberVO vo) throws Exception;
+	Map<String, String> jsonMemberList(Map<String, String> map) throws Exception;
 
 }
