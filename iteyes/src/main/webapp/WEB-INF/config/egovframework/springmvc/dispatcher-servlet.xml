@@ -17,6 +17,12 @@
         <property name="webBindingInitializer">
             <bean class="egovframework.example.cmmn.web.EgovBindingInitializer"/>
         </property>
+        <property name="messageConverters">
+			<list>
+			<!-- json  MessageConverter 추가-->
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+			</list>
+		</property>  
     </bean>
     <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
         <property name="interceptors">
@@ -59,6 +65,16 @@
         </property>
     </bean>
 	<!-- /For Pagination Tag -->
+	
+	
+	<!-- ViewResolver 설정=============== 
+	<bean id="beanNameViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver" p:order="1"/>
+	<bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:order="2"></bean>
+	
+	
+	<bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+        <property name="contentType" value="text/html;charset=UTF-8"/>
+    </bean>-->
 
     <mvc:view-controller path="/cmmn/validator.do" view-name="cmmn/validator"/>
 </beans>

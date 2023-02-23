@@ -21,4 +21,8 @@
         INSERT INTO MEMBER (ID, NICK, PW, AUTH) 
                 VALUES (#{id}, #{nick}, #{pw}, #{auth})
     </insert>
+    <insert id="jsonMemberInsert" parameterType="map" >
+        INSERT INTO MEMBER (ID, NICK, PW, AUTH) 
+                VALUES (#{id}, #{nick}, #{pw}, #{auth})
+    </insert>
 </mapper>

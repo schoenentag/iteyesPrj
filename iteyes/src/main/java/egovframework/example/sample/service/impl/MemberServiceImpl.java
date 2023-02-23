@@ -26,16 +26,20 @@ public class MemberServiceImpl implements MemberService {
 
 	@Override
 	public int memberInsert(MemberVO vo) throws Exception{
-		
-	System.out.println("service실행");
 	    return mMap.memberInsert(vo);
-	
-		 
 	}
 
 	@Override
-	public Map<String, String> jsonMemberList(Map<String, String> map) throws Exception {
+	public List<Map<String, String>> jsonMemberList(Map<String, String> map) throws Exception {
+		System.out.println("jsonMemberList serviceImpl 실행");
+		
 		return mMap.jsonMemberList(map);
+	}
+
+	@Override
+	public int jsonMemberInsert(Map<String, String> map) throws Exception {
+		System.out.println("jsonMemberInsert servieImpl 실행");
+		return mMap.jsonMemberInsert(map);
 	}
 	
 

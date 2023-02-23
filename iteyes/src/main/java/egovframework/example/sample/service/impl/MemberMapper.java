@@ -14,6 +14,9 @@ public interface MemberMapper {
 	
 	List<MemberVO> memberList() throws Exception;
 	int memberInsert(MemberVO vo) throws Exception;
-	Map<String, String> jsonMemberList(Map<String, String> map) throws Exception;
+	
+	//json type으로 통신시 사용되는 메소드
+	List<Map<String, String>> jsonMemberList(Map<String, String> map) throws Exception;
+	int jsonMemberInsert(Map<String, String>map) throws Exception;
 
 }

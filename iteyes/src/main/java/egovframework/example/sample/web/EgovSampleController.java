@@ -15,6 +15,7 @@
  */
 package egovframework.example.sample.web;
 
+import java.io.BufferedOutputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -221,17 +222,27 @@ public class EgovSampleController {
 	
 	@ResponseBody
 	@RequestMapping("/memberInsert.do")
-	public Map<String, String>ajaxMemberInsert(@RequestBody Map<String, String> map) throws Exception {
+	public List<Map<String, String>>ajaxMemberInsert(@RequestBody Map<String, String> mMap) throws Exception {
 		//public List<MemberVO>ajaxMemberInsert(MemberVO vo) throws Exception {
 		System.out.println("controller는 실행");
-		System.out.println(map);
-		return map;
-		/*try {
-		    int i = memberService.memberInsert(vo);
+		System.out.println(mMap);
+		
+		//Map<> → Object 변환
+		//ObjectMapper objectMapper = new ObjectMapper();
+		//파라미터Map에서 DTO에 들어있지 않는 변수가 있어도 무시함.
+		//objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		
+		//MemberVO mVO = objectMapper.convertValue(mMap.get("MemberVO"), MemberVO.class); //형변환 
+		//System.out.println(mVO);
+		//return map;
+		try {
+		    //int i = memberService.memberInsert(mVO);
+			int i = memberService.jsonMemberInsert(mMap);
 		    
 		if(i>0) {
 			System.out.println("success");
-			return  memberService.memberList();
+			
+			return  memberService.jsonMemberList(mMap);
 		}else {
 			System.out.println("fail");
 			return  null;
@@ -240,7 +251,7 @@ public class EgovSampleController {
 			System.out.println("err");
 			e.printStackTrace();
 			return null;
-		}*/
+		}
 		
 	}
 	

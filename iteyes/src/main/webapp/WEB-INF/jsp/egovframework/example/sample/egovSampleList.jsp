@@ -139,13 +139,13 @@
         </div>
     </form:form>
 <script type="text/javascript">
-/* 하은 작업
+
     $(document).ready(function(){
         ajaxMemberInsertCall();
     });
     
     function ajaxMemberInsertCall(){
-    	let ids = 100;
+    	
     	let testjson = {
 			    'id' : "200",
 			    'nick' : "test",
@@ -158,16 +158,20 @@
     		  contentType: 'application/json; charset=utf-8',
 			  url : '/memberInsert.do',
 			  data : JSON.stringify(testjson),
-			 // datatype: "JSON", (생략가능)
+			  datatype: "JSON",
 			  success : function(data) {
 				  console.log('ajax 통신 성공');
-				  console.log(data)
+				  //console.log(data)
+				  
+				  //for(let mem of data){
+				//	  console.log(mem);
+				  //}
 			  }, 
 			  error : function(err){
 			    console.log(err);
 			}
 			});
-    }*/
+    }
 
 
 </script>
