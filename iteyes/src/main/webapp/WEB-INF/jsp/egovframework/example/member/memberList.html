@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<title>회원조회</title>
+</head>
+<body>
+
+test입니다!
+
+<script type="text/javascript">
+
+	$(document).ready(function(){
+		console.log("페이지 확인!");
+	    //ajaxCall();
+	});
+	
+	function ajaxCall(){
+		let ids = 100;
+		
+		$.ajax({
+			  url : '/memberInsert',
+			  data : {
+			    id : ids,
+			    nick : "test",
+			    pw : "1234",
+			    auth :"USER"
+			  },
+			  success : function(data, textStatus, jqXHR) {
+			    console.log(data);
+			    id++;
+			  }, 
+			  error : function(err){
+			    console.log(err);
+			}
+			});
+		
+	}
+		
+
+</script>
+
+</body>
+</html>
