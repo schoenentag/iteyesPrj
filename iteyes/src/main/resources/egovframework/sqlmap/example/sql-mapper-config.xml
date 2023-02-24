@@ -8,5 +8,6 @@
 		<typeAlias alias="sampleVO" type="egovframework.example.sample.service.SampleVO"/>
 		<typeAlias alias="MemberVO" type="egovframework.example.sample.service.MemberVO" />
 		<typeAlias alias="CommentVO" type="egovframework.example.board.service.CommentVO" />
+		<typeAlias alias="CategoryVO" type="egovframework.example.board.service.CategoryVO" />
     </typeAliases>
 </configuration>
