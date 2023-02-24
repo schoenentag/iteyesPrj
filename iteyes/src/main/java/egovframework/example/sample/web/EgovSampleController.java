@@ -15,11 +15,11 @@
  */
 package egovframework.example.sample.web;
 
-import java.io.BufferedOutputStream;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 import org.egovframe.rte.fdl.property.EgovPropertyService;
 import org.egovframe.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
@@ -220,12 +220,12 @@ public class EgovSampleController {
 		return "forward:/egovSampleList.do";
 	}
 	
-	@ResponseBody
+	/*@ResponseBody
 	@RequestMapping("/memberInsert.do")
 	public List<Map<String, String>>ajaxMemberInsert(@RequestBody Map<String, String> mMap) throws Exception {
-		//public List<MemberVO>ajaxMemberInsert(MemberVO vo) throws Exception {
 		System.out.println("controller는 실행");
 		System.out.println(mMap);
+		return memberService.jsonMemberList(mMap);
 		
 		//Map<> → Object 변환
 		//ObjectMapper objectMapper = new ObjectMapper();
@@ -235,18 +235,22 @@ public class EgovSampleController {
 		//MemberVO mVO = objectMapper.convertValue(mMap.get("MemberVO"), MemberVO.class); //형변환 
 		//System.out.println(mVO);
 		//return map;
+		
 		try {
 		    //int i = memberService.memberInsert(mVO);
 			int i = memberService.jsonMemberInsert(mMap);
 		    
-		if(i>0) {
-			System.out.println("success");
-			
-			return  memberService.jsonMemberList(mMap);
-		}else {
-			System.out.println("fail");
-			return  null;
-		}
+			if(i>0) {
+				System.out.println("success");
+				List<Map<String, String>> test =memberService.jsonMemberList(mMap);
+				
+				System.out.println(test);
+				
+				return  test;
+			}else {
+				System.out.println("fail");
+				return  null;
+			}
 		}catch(Exception e) {
 			System.out.println("err");
 			e.printStackTrace();
@@ -255,7 +259,14 @@ public class EgovSampleController {
 		
 	}
 	
-	
+	@ResponseBody
+	@RequestMapping("/memberListTest.do")
+	public List<Map<?,?>> memberListTest(@RequestBody List<Map<?,?>> listMap){
+		System.out.println("memberList.do controller");
+		System.out.println(listMap);
+		return listMap;
+		
+	}*/
 
 
 }

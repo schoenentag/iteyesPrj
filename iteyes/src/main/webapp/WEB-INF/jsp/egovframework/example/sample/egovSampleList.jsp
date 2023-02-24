@@ -129,8 +129,8 @@
         	<div id="sysbtn">
         	  <ul>
         	      <li>
-        	          <span class="btn_blue_l">
-        	              <a href="javascript:fn_egov_addView();"><spring:message code="button.create" /></a>
+        	          <span class="btn_blue_l" onclick="ajaxMemberInsertCall()">
+        	              <a href="#"><spring:message code="button.create" /></a>
                           <img src="<c:url value='/images/egovframework/example/btn_bg_r.gif'/>" style="margin-left:6px;" alt=""/>
                       </span>
                   </li>
@@ -138,30 +138,28 @@
         	</div>
         </div>
     </form:form>
+    
 <script type="text/javascript">
 
     $(document).ready(function(){
-        ajaxMemberInsertCall();
+       // ajaxMemberInsertCall();
     });
     
     function ajaxMemberInsertCall(){
     	
-    	let testjson = {
-			    'id' : "200",
-			    'nick' : "test",
-			    'pw' : "1234",
-			    'auth' :"USER"
-			  }
+    	let testjson = { 'id' : "300", 'nick' : "eGov", 'pw' : "1234", 'auth' :"USER"};
+//    		            { 'id' : "301", 'nick' : "eGov", 'pw' : "1234", 'auth' :"USER"}];
     	
     	$.ajax({
     		  type: 'post',
     		  contentType: 'application/json; charset=utf-8',
 			  url : '/memberInsert.do',
+//			  url : '/memberListTest.do',
 			  data : JSON.stringify(testjson),
 			  datatype: "JSON",
 			  success : function(data) {
 				  console.log('ajax 통신 성공');
-				  //console.log(data)
+				  console.log(data)
 				  
 				  //for(let mem of data){
 				//	  console.log(mem);

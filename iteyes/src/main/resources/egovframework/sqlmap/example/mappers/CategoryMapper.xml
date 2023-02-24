@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.category.service.impl.CategoryMapper">
+
+    <resultMap id="categori" type="egovframework.example.category.service.CategoryVO" >
+        <result property ="id" column ="id"/>
+        <result property ="name" column ="nick"/>
+        <result property ="description" column ="pw"/>
+        <result property ="useYn" column ="auth"/>
+        <result property ="regUser" column ="auth"/>
+    </resultMap>
+    
+    <!-- 전체조회 + 검색 -->
+    <select id="jsonCategoryList" parameterType="map" resultType="map">
+        SELECT ID, NAME, DESCRIPTION, USER_YN, REG_USER
+        FROM SAMPLE
+        <!-- 검색 : 파라미터 값이 있으면...-->
+        <if test="!test.equals('') and test!=null">
+            <!-- 검색 옵션이 카테고리 이름이라면...-->
+			<if test="option == 'N'">
+			    WHERE NAME LIKE CONCAT('%', #{keyword}, '%')
+			    ORDER BY ID;
+				<!-- '%'||#{keyword}||'%' -->
+			</if>
+			<!-- 검색 옵션이 카테고리 설명이라면...-->
+			<if test="option == 'D'">
+			    WHERE NAME LIKE CONCAT('%', #{keyword}, '%')
+			    ORDER BY ID;
+			</if>
+			<!-- 검색 옵션이 카테고리 관리자명이라면...-->
+			<if test="option == 'U'">
+			    WHERE NAME LIKE CONCAT('%', #{keyword}, '%')
+			    ORDER BY ID;
+			</if>
+		</if>
+    </select>
+    
+    <!-- 단건 조회 -->
+    <select id="jsonCategoryDetail" parameterType="map" resultType="map">
+        SELECT ID, NAME, DESCRIPTION, USER_YN, REG_USER
+        FROM SAMPLE
+            WHERE ID = #{id}
+    </select>
+    
+    <!-- 등록 -->
+    <insert id="jsonCategoryInsert" parameterType="map">
+        INSERT INTO SAMPLE (ID, NAME, DESCRIPTION, USE_YN, REG_USER)
+        VALUES (#{id}, #{name}, #{description}, #{userYn}, #{regUser})
+    </insert>
+    
+    <!-- 수정 -->
+    <update id="jsonCategoryUpdate" parameterType="map">
+        UPDATE SAMPLE  
+            SET NAME = #{name}, DESCRIPTION = #{description}, 
+                USER_YN = #{userYn}
+    </update>
+    
+    <!-- 삭제 -->
+    <delete id="jsonCategoryDelete" parameterType="map">
+        DELETE FROM SAMPLE
+            WHERE ID = #{id}
+    </delete>
+</mapper>

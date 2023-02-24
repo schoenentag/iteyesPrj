@@ -14,7 +14,7 @@
     </select>
     
     <select id="jsonMemberList" parameterType="map" resultType="map">
-    SELECT * FROM MEMBER
+    SELECT * FROM MEMBER 
     </select>
     
     <insert id="memberInsert" parameterType="egovframework.example.sample.service.MemberVO">
