@@ -3,9 +3,16 @@ package egovframework.example.board.service;
 import lombok.Data;
 
 /**
- * 카테고리 관련 VO 변수 선언
- * @author han
+ * @Class Name : CategoryVO.java
+ * @Description : CategoryVO Class
+ * @Modification Information
+ * @
+ * @  수정일      수정자              수정내용
+ * @ ---------   ---------   -------------------------------
+ * @ 2023.02.23                  최초생성
  *
+ * @author 김하은
+ * 카테고리
  */
 @Data
 public class CategoryVO {

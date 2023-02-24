@@ -18,8 +18,8 @@ public class CategoryServiceImpl implements CategoryService {
 	
 	/* 전체 조회*/
 	@Override
-	public List<Map<String, String>> jsonCategoryList(Map<String, String> map) throws Exception {
-		return cMap.jsonCategoryList(map);
+	public List<Map<String, String>> jsonCategoryList() throws Exception {
+		return cMap.jsonCategoryList();
 	}
 
 	/* 단건 조회 */
@@ -44,6 +44,12 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public int jsonCategoryDelete(Map<String, String> map) throws Exception {
 		return cMap.jsonCategoryDelete(map);
+	}
+
+	/* 검색 */
+	@Override
+	public List<Map<String, String>> jsonCategorySearch(Map<String, String> map) throws Exception {
+		return cMap.jsonCategorySearch(map);
 	}
 
 }

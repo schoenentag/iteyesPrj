@@ -5,7 +5,7 @@ import java.util.Map;
 
 public interface CategoryService {
 	/* 전체 조회 */
-	List<Map<String, String>> jsonCategoryList(Map<String, String> map) throws Exception; 
+	List<Map<String, String>> jsonCategoryList() throws Exception; 
     /* 단건 조회 */
 	Map<String, String> jsonCategoryDetail(Map<String,String> map) throws Exception;
 	/* 등록 */
@@ -14,4 +14,8 @@ public interface CategoryService {
 	int jsonCategoryUpdate(Map<String, String> map) throws Exception;
 	/* 삭제 */
 	int jsonCategoryDelete(Map<String, String> map) throws Exception;
+	/* 검색 */
+	List<Map<String, String>> jsonCategorySearch(Map<String, String> map) throws Exception; 
+	
+	
 }

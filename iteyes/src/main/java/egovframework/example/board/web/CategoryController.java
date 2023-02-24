@@ -19,8 +19,10 @@ public class CategoryController {
 	/* 전체조회 */
 	@ResponseBody
 	@RequestMapping("/jsonCategoryList.do")
-	public List<Map<String,String>>jsonCategoryList(Map<String,String> map) throws Exception{
-		return categoriService.jsonCategoryList(map);
+	public List<Map<String,String>>jsonCategoryList() throws Exception{
+		
+		//List<EgovMap>
+		return categoriService.jsonCategoryList();
 	}
 	
 	/* 단건 조회 */
