@@ -6,4 +6,5 @@
 	<sqlMap resource="egovframework/sqlmap/example/mappers/MemberMapper.xml" />
 	<sqlMap resource="egovframework/sqlmap/example/mappers/CommentMapper.xml" />
 	<sqlMap resource="egovframework/sqlmap/example/mappers/CategoryMapper.xml" />
+	<sqlMap resource="egovframework/sqlmap/example/mappers/BoardMapper.xml" />
 </sqlMapConfig>

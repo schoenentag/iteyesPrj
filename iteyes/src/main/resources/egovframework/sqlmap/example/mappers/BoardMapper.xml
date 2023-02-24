@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.example.board.service.impl.BoardMapper">
+
+<select id="selectBoardList" resultType="map">
+SELECT * from BOARD;
+
+</select>
+
+<insert id="insertBoard">
+INSERT into BOARD values(nextval(seq_board),'자게','y','자게제목','김씨','내용입니다','456',sysdate(),null,null);
+</insert>
+
+
+
+
+
+
+
+</mapper>
