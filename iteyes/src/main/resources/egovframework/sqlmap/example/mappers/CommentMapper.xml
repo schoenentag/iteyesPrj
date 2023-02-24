@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="egovframework.example.board.service.impl.CommentMapper">
+
+	<resultMap id="comment" type="egovframework.example.board.service.CommentVO" >
+        <result property ="id" column ="id"/>
+        <result property ="boardId" column ="board_id"/>
+        <result property ="regUser" column ="reg_user"/>
+        <result property ="content" column ="content"/>
+        <result property ="dt" column ="dt"/>
+        <result property ="parentId" column ="parent_id"/>
+    </resultMap>
+    
+	<insert id="insertComment" parameterType="CommentVO">
+		INSERT INTO COMMENT(board_id
+							, reg_user
+							, content
+							, dt
+							, parent_id)
+					VALUES(#{boardId}
+						, #{regUser}
+						, #{content}
+						, NOW()
+						, #{parentId});
+	</insert>
+	
+	<update id="updateComment">
+      	UPDATE COMMENT 
+      	SET content = #{content}
+		WHERE id = #{id}
+	</update>
+   
+	<delete id="deleteComment" parameterType="int">
+		DELETE FROM COMMENT WHERE id = #{ID}
+	</delete>
+	
+	<select id="getComment" parameterType="CommentVO" resultType="map">
+		SELECT id, board_id, reg_user, content, dt, parent_id
+		FROM COMMENT
+		WHERE board_id = #{boardId}
+		AND parent_id = #{parentId}
+	</select>
+	
+
+</mapper>
