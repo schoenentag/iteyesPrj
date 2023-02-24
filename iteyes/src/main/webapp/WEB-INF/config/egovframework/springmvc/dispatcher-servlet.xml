@@ -53,6 +53,9 @@
     <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" p:order="1"
 	    p:viewClass="org.springframework.web.servlet.view.JstlView"
 	    p:prefix="/WEB-INF/jsp/egovframework/example/" p:suffix=".jsp"/>
+	    
+<!--     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"  -->
+<!--           p:prefix="/WEB-INF/jsp/egovframework/example/" p:suffix=".html" p:order="0"/> -->
 
     <!-- For Pagination Tag -->
     <bean id="imageRenderer" class="egovframework.example.cmmn.web.EgovImgPaginationRenderer"/>

@@ -16,10 +16,15 @@ public class BoardController {
 	@Autowired
 	BoardService service;
 	
+	@RequestMapping("/goBoardList.do")
+	String goBoardList() {
+		System.out.println("go보드");
+		return "board/boardList";
+	}
+	
 	@ResponseBody
 	@RequestMapping("/selectBoardList.do")
 	List<Map<?,?>> selectBoardList() throws Exception{
-		System.out.println("ttttttttttttttttttttttt");
 		System.out.println(service.selectBoardList());
 		return service.selectBoardList();
 	}
