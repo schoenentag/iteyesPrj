@@ -3,34 +3,34 @@
 <mapper namespace="egovframework.example.board.service.impl.CategoryMapper">
     
     <!-- 전체조회 + 검색 -->
-    <select id="jsonCategoryList"  resultType="egovmap">
-        SELECT ID, NAME, DESCRIPTION, USER_YN, REG_USER
+    <select id="jsonCategoryList"  resultType="egovframework.example.board.service.impl.CustomMap">
+        SELECT ID, NAME, DESCRIPTION, USE_YN, REG_USER
         FROM SAMPLE
         ORDER BY ID
     </select>
     
     <!-- 단건 조회 -->
-    <select id="jsonCategoryDetail" parameterType="egovmap" resultType="egovmap">
-        SELECT ID, NAME, DESCRIPTION, USER_YN, REG_USER
+    <select id="jsonCategoryDetail" parameterType="egovframework.example.board.service.impl.CustomMap" resultType="egovframework.example.board.service.impl.CustomMap">
+        SELECT ID, NAME, DESCRIPTION, USE_YN, REG_USER
         FROM SAMPLE
             WHERE ID = #{id}
     </select>
     
     <!-- 등록 -->
-    <insert id="jsonCategoryInsert" parameterType="egovmap">
+    <insert id="jsonCategoryInsert" parameterType="egovframework.example.board.service.impl.CustomMap">
         INSERT INTO SAMPLE (ID, NAME, DESCRIPTION, USE_YN, REG_USER)
         VALUES (#{id}, #{name}, #{description}, #{userYn}, #{regUser})
     </insert>
     
     <!-- 수정 -->
-    <update id="jsonCategoryUpdate" parameterType="egovmap">
+    <update id="jsonCategoryUpdate" parameterType="egovframework.example.board.service.impl.CustomMap">
         UPDATE SAMPLE  
             SET NAME = #{name}, DESCRIPTION = #{description}, 
-                USER_YN = #{userYn}
+                USE_YN = #{userYn}
     </update>
     
     <!-- 삭제 -->
-    <delete id="jsonCategoryDelete" parameterType="map">
+    <delete id="jsonCategoryDelete" parameterType="egovframework.example.board.service.impl.CustomMap">
         DELETE FROM SAMPLE
             WHERE ID = #{id}
     </delete>

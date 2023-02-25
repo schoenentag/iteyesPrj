@@ -52,11 +52,14 @@
 
     <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" p:order="1"
 	    p:viewClass="org.springframework.web.servlet.view.JstlView"
-	    p:prefix="/WEB-INF/jsp/egovframework/example/" p:suffix=".jsp"/>
-	    
-<!--     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"  -->
-<!--           p:prefix="/WEB-INF/jsp/egovframework/example/" p:suffix=".html" p:order="0"/> -->
-
+	    p:prefix="/WEB-INF/jsp/egovframework/example/" p:suffix=".jsp" >
+	</bean>
+	<!-- 2023.02.25 김하은 : .html 우선순위로 변경 -->
+	<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" p:order="0"
+	    p:viewClass="org.springframework.web.servlet.view.JstlView"
+	    p:prefix="/WEB-INF/jsp/egovframework/example/" p:suffix=".html" >
+	</bean>
+	
     <!-- For Pagination Tag -->
     <bean id="imageRenderer" class="egovframework.example.cmmn.web.EgovImgPaginationRenderer"/>
 
@@ -68,16 +71,5 @@
         </property>
     </bean>
 	<!-- /For Pagination Tag -->
-	
-	
-	<!-- ViewResolver 설정=============== 
-	<bean id="beanNameViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver" p:order="1"/>
-	<bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:order="2"></bean>
-	
-	
-	<bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
-        <property name="contentType" value="text/html;charset=UTF-8"/>
-    </bean>-->
-
     <mvc:view-controller path="/cmmn/validator.do" view-name="cmmn/validator"/>
 </beans>

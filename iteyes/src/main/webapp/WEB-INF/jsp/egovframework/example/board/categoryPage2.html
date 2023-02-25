@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<title>게시판 카테고리</title>
+<!-- <link rel="stylesheet" href="css/board/boardCss.css"> -->
+</head>
+<div class="board_wrap">
+        <div class="board_title">
+            <strong>게시판 카테고리</strong>
+                <p>게시판 카테고리 리스트입니다.</p>
+        </div>
+
+        <div class="board_content">
+            <ul>
+                <select name="category">
+                    <option value="category_name">카테고리명</option>
+                    <option value="category_name">1카테고리</option>
+                    <option value="category_name">2카테고리</option>
+                    <option value="category_name">3카테고리</option>
+                </select>
+                <div class="search">
+                    <input type="text" placeholder="검색어를 입력해주세요.">
+                    
+                    <button>검색</button>
+                   
+               </div>
+                <li><a href="#">삭제</a></li>
+                <li><a href="#">등록</a></li>
+                <li><a href="#">전체글보기</a></li>
+            </ul>
+        </div>
+
+        <div class="board_list_wrap">
+            <div class="board_list">
+                <div class="top">
+                    <div class="cbox"></div>
+                    <div class="num">번호</div>
+                    <div class="title">게시판명</div>
+                    <div class="writer">설명</div>
+                    <div class="yn">사용여부</div>
+                    <div class="name">등록자</div>
+                    <div class="runs">이동</div>
+
+                </div>
+
+                <div>
+                    <input type="checkbox" class="cbox">
+                    <div class="num">5</div>
+                    <div class="title"><a href="#">자유게시판</a></div>
+                    <div class="writer">자유롭게 글을 남겨주세요.</div>
+                    <div class="yn">Y</div>
+                    <div class="name">123</div>
+                    <div class="run">></div>
+
+                </div>
+                <div>
+                    <input type="checkbox" class="cbox">
+                    <div class="num">4</div>
+                    <div class="title"><a href="#">공지게시판</a></div>
+                    <div class="writer">자유롭게 글을 남겨주세요.</div>
+                    <div class="yn">Y</div>
+                    <div class="name">123</div>
+                    <div class="run">></div>
+
+                </div>
+                <div>
+                    <input type="checkbox" class="cbox">
+                    <div class="num">3</div>
+                    <div class="title"><a href="#">카테고리3</a></div>
+                    <div class="writer">자유롭게 글을 남겨주세요.</div>
+                    <div class="yn">Y</div>
+                    <div class="name">123</div>
+                    <div class="run">></div>
+
+                </div>
+                <div>
+                    <input type="checkbox" class="cbox">
+                    <div class="num">2</div>
+                    <div class="title"><a href="#">카테고리4</a></div>
+                    <div class="writer">자유롭게 글을 남겨주세요.</div>
+                    <div class="yn">Y</div>
+                    <div class="name">123</div>
+                    <div class="run">></div>
+
+                </div>
+                <div>
+                    <input type="checkbox" class="cbox">
+                    <div class="num">1</div>
+                    <div class="title"><a href="#">공사중</a></div>
+                    <div class="writer">자유롭게 글을 남겨주세요.</div>
+                    <div class="yn">Y</div>
+                    <div class="name">123</div>
+                    <div class="run">></div>
+
+                </div>
+            </div>
+
+            <div class="board_page">
+                <a href="" class="bt first"><<</a>
+                <a href="" class="bt prev"><</a>
+                <a href="" class="num on">1</a>
+                <a href="" class="num">2</a>
+                <a href="" class="num">3</a>
+                <a href="" class="num">4</a>
+                <a href="" class="num">5</a>
+                <a href="" class="bt next">></a>
+                <a href="" class="bt last">>></a>
+            </div>
+
+            <!-- <div class="bt_wrap">
+                <a href="#" class="on"> 등록 </a>
+               <a href="#"> 수정 </a>  
+            </div> -->
+            
+        </div>
+
+    </div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	ajaxCategoryCall();
+ });
+ 
+ function ajaxCategoryCall(){
+	 let option; //검색할 옵션 값을 담을 변수; N(이름), D(설명), U(관리자명)
+	 let keyword;
+ 	 let list = {"option" : option, "keyword" : keyword}
+ 	$.ajax({
+ 		  type: 'post',
+ 		  contentType: 'application/json; charset=utf-8',
+			  url : '/jsonCategoryList.do',
+			  data : JSON.stringify(list),
+			  datatype: "JSON",
+			  success : function(data) {
+				  console.log('ajax 통신 성공');
+				  console.log(data)
+			  }, 
+			  error : function(err){
+			    console.log(err);
+			}
+			});
+ }
+</script>
+</body>
+</html>

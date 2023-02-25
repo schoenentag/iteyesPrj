@@ -16,10 +16,18 @@ public class CategoryController {
 	@Autowired
 	private CategoryService categoriService;
 	
+	/* 페이지 이동 */
+	@RequestMapping("/categoryPage2.do")
+	public String categoryList() {
+		//System.out.println("controller");
+		return "board/categoryPage2";
+	}
+	
 	/* 전체조회 */
 	@ResponseBody
 	@RequestMapping("/jsonCategoryList.do")
 	public List<Map<String,String>>jsonCategoryList() throws Exception{
+		System.out.println("jsonCategoryList contoller");
 		
 		//List<EgovMap>
 		return categoriService.jsonCategoryList();

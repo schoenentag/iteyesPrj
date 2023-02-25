@@ -2,6 +2,10 @@
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 
 <configuration>
+    <!-- Camel case 설정
+    <settings>
+        <setting name="mapUnderscoreTocamelCase" value="true" />
+    </setting>-->
     <typeAliases>
 		<typeAlias alias="egovMap" type="org.egovframe.rte.psl.dataaccess.util.EgovMap"/>
 		<typeAlias alias="searchVO" type="egovframework.example.sample.service.SampleDefaultVO"/>
@@ -10,5 +14,6 @@
 		<typeAlias alias="CommentVO" type="egovframework.example.board.service.CommentVO" />
 		<typeAlias alias="CategoryVO" type="egovframework.example.board.service.CategoryVO" />
 		<typeAlias alias="BoardVO" type="egovframework.example.board.service.BoardVO" />
+		<typeAlias alias="CustomMap" type="egovframework.example.board.service.impl.CustomMap"/>
     </typeAliases>
 </configuration>
