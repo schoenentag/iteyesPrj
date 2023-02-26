@@ -2,7 +2,107 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="egovframework.example.board.service.impl.BoardMapper">
 
-<select id="selectBoardList" resultType="map">
+<!-- Start 전체 게시글 목록 -->
+  <!-- 조건 공통 쿼리 -->
+<sql id="boardCri">
+  <if test=" schId != null and schId != '' ">
+    and id like concat('%',#{schId},'%')  <!-- 달러 변수는 값에 따옴표가 없고, 샵변수는 있고 차이임 -->
+  </if>
+  <if test=" schCartegory != null and schCartegory != '' ">
+    and cartegory like concat('%',#{schCartegory},'%')
+  </if>
+  <if test=" schNoticeYn != null and schNoticeYn != '' ">
+    and notice_yn like concat('%',#{schNoticeYn},'%')
+  </if>
+  <if test=" schTitle != null and schTitle != '' ">
+    and title like concat('%',#{schTitle},'%')
+  </if>
+  <if test=" schContent != null and schContent != '' ">
+    and content like concat('%',#{schContent},'%')
+  </if>
+  <if test=" schRegUser != null and schRegUser != '' ">
+    and reg_user like concat('%',#{schRegUser},'%')
+  </if>
+  <if test=" schDt != null and schDt != '' ">
+    and dt like concat('%',#{schDt},'%')
+  </if>
+  <if test=" schViewCount != null and schViewCount != '' ">
+    and view_count like concat('%',#{schViewCount},'%')
+  </if>
+  <if test=" schFileName != null and schFileName != '' ">
+    and file_name like concat('%',#{schFileName},'%')
+  </if>
+  <if test=" schPw != null and schPw != '' ">
+    and pw like concat('%',#{schPw},'%')
+  </if>
+</sql>
+
+
+  <!-- 전체 카운팅 -->
+<select id="boardInfoCnt" resultType="int">
+  SELECT COUNT(*) FROM BOARD
+<!--   WHERE user_type =  -->
+<!--   <if test=" uType == 'stu' ">'ROLE_STU'</if> -->
+<!--   <if test=" uType == 'prof' ">'ROLE_PROF'</if> -->
+
+<!-- "where and" 피하는 방법1: where 1=1 / 방법2: <where>태그를 이용 등..  -->
+  <where>
+    <include refid="boardCri"></include>
+  </where>
+</select>
+
+  <!-- 메인 쿼리 -->
+<select id="boardInfoProc" resultType="CustomMap">
+  select id, 
+         cartegory, 
+         notice_yn,
+         title,
+         content,
+         reg_user,
+         dt,
+         view_count,
+         file_name,
+         pw
+  from BOARD
+<!--   where user_type =  -->
+<!--   <if test=" uType == 'stu' ">'ROLE_STU'</if> -->
+<!--   <if test=" uType == 'prof' ">'ROLE_PROF'</if> -->
+  <where>
+    <include refid="boardCri"></include>
+  </where>
+  
+  order by
+  <if test="order == 0 and orderDir == 'asc'">id</if>
+  <if test="order == 0 and orderDir == 'desc'">id desc</if>
+  <if test="order == 1 and orderDir == 'asc'">cartegory</if>
+  <if test="order == 1 and orderDir == 'desc'">cartegory desc</if>
+  <if test="order == 2 and orderDir == 'asc'">notice_yn</if>
+  <if test="order == 2 and orderDir == 'desc'">notice_yn desc</if>
+  <if test="order == 3 and orderDir == 'asc'">title</if>
+  <if test="order == 3 and orderDir == 'desc'">title desc</if>
+  <if test="order == 4 and orderDir == 'asc'">content</if>
+  <if test="order == 4 and orderDir == 'desc'">content desc</if>
+  <if test="order == 5 and orderDir == 'asc'">reg_user</if>
+  <if test="order == 5 and orderDir == 'desc'">reg_user desc</if>
+  <if test="order == 6 and orderDir == 'asc'">dt</if>
+  <if test="order == 6 and orderDir == 'desc'">dt desc</if>
+  <if test="order == 7 and orderDir == 'asc'">view_count</if>
+  <if test="order == 7 and orderDir == 'desc'">view_count desc</if>
+  <if test="order == 8 and orderDir == 'asc'">file_name</if>
+  <if test="order == 8 and orderDir == 'desc'">file_name desc</if>
+  <if test="order == 9 and orderDir == 'asc'">pw</if>
+  <if test="order == 9 and orderDir == 'desc'">pw desc</if>
+    
+<!--   limit #{param1}, #{param2}          mybatis에서 파라미터 2개일때 작성법(순서대로 param1, param2, ...) -->
+  limit #{start}, #{length} <!-- 서비스 파라미터가 n개로 늘어날거 같아서 map방식으로 변경함 -->
+</select>
+<!-- End 전체 전체 게시글 목록 -->
+
+
+
+
+
+<select id="selectBoardList" resultType="CustomMap">
 SELECT * from BOARD;
 
 </select>
@@ -10,10 +110,6 @@ SELECT * from BOARD;
 <insert id="insertBoard">
 INSERT into BOARD values(nextval(seq_board),'자게','y','자게제목','김씨','내용입니다','456',sysdate(),null,null);
 </insert>
-
-
-
-
 
 
 

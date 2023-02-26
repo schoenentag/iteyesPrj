@@ -15,15 +15,30 @@
         <Logger name="org.egovframe" level="DEBUG" additivity="false">
             <AppenderRef ref="console" />
         </Logger>
-          <!-- log SQL with timing information, post execution -->
+<!--           log SQL with timing information, post execution -->
         <Logger name="jdbc.sqltiming" level="INFO" additivity="false">
             <AppenderRef ref="console" />
         </Logger>
         <Logger name="org.springframework" level="INFO" additivity="false">
             <AppenderRef ref="console" />
         </Logger>
+<!--         2023.02.26. 곽주엽: 로그레벨 추가 -->
+        <Logger name="jdbc.audit" level="OFF" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="jdbc.sqlonly" level="OFF" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="jdbc.resultset" level="OFF" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        <Logger name="jdbc.resultsettable" level="INFO" additivity="false">
+            <AppenderRef ref="console" />
+        </Logger>
+        
         <Root level="INFO">
             <AppenderRef ref="console" />
         </Root>
+        
     </Loggers>
 </Configuration>
