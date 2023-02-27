@@ -23,4 +23,5 @@ public class CategoryVO {
 	private String useYn; //사용여부 (y or n)
 	private String regUser; //등록자(default ADMIN);
 
+
 }
