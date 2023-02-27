@@ -24,7 +24,7 @@ public class BoardVO {
 	//아이디
 	private String id;
 	//카테고리
-	private String cartegory;
+	private String category;
 	//공지 등록 여부
 	private String noticeYn;
 	//제목

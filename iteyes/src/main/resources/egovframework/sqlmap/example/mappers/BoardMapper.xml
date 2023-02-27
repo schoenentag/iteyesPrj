@@ -8,8 +8,8 @@
   <if test=" schId != null and schId != '' ">
     and id like concat('%',#{schId},'%')  <!-- 달러 변수는 값에 따옴표가 없고, 샵변수는 있고 차이임 -->
   </if>
-  <if test=" schCartegory != null and schCartegory != '' ">
-    and cartegory like concat('%',#{schCartegory},'%')
+  <if test=" schCategory != null and schCategory != '' ">
+    and category like concat('%',#{schCategory},'%')
   </if>
   <if test=" schNoticeYn != null and schNoticeYn != '' ">
     and notice_yn like concat('%',#{schNoticeYn},'%')
@@ -54,7 +54,7 @@
   <!-- 메인 쿼리 -->
 <select id="boardInfoProc" resultType="CustomMap">
   select id, 
-         cartegory, 
+         category, 
          notice_yn,
          title,
          content,
@@ -63,7 +63,7 @@
          view_count,
          file_name,
          pw
-  from BOARD
+    from BOARD
 <!--   where user_type =  -->
 <!--   <if test=" uType == 'stu' ">'ROLE_STU'</if> -->
 <!--   <if test=" uType == 'prof' ">'ROLE_PROF'</if> -->
@@ -74,8 +74,8 @@
   order by
   <if test="order == 0 and orderDir == 'asc'">id</if>
   <if test="order == 0 and orderDir == 'desc'">id desc</if>
-  <if test="order == 1 and orderDir == 'asc'">cartegory</if>
-  <if test="order == 1 and orderDir == 'desc'">cartegory desc</if>
+  <if test="order == 1 and orderDir == 'asc'">category</if>
+  <if test="order == 1 and orderDir == 'desc'">category desc</if>
   <if test="order == 2 and orderDir == 'asc'">notice_yn</if>
   <if test="order == 2 and orderDir == 'desc'">notice_yn desc</if>
   <if test="order == 3 and orderDir == 'asc'">title</if>
@@ -96,10 +96,48 @@
 <!--   limit #{param1}, #{param2}          mybatis에서 파라미터 2개일때 작성법(순서대로 param1, param2, ...) -->
   limit #{start}, #{length} <!-- 서비스 파라미터가 n개로 늘어날거 같아서 map방식으로 변경함 -->
 </select>
-<!-- End 전체 전체 게시글 목록 -->
+<!-- End 전체 게시글 목록 -->
+
+
+<!-- 게시글 단건 조회 -->
+<select id="boardOne" resultType="CustomMap">
+  select *
+    from BOARD
+  <where>
+    id = #{id}
+  </where>
+</select>
 
 
 
+<sql id="idInsert">
+  ,'-', (
+    select lpad(MAX(substr(id,5))+1,5,0)
+    from BOARD b
+    where substr(id,1,3) = 
+</sql>
+
+<!-- 게시글 등록 -->
+<insert id="boardInsertProc" parameterType="map">
+  insert into BOARD 
+  values (
+    concat (
+      <if test="id == 'JAN'">'JAN'<include refid="idInsert"></include>'JAN'</if>
+      <if test="id == 'JAU'">'JAU'<include refid="idInsert"></include>'JAU'</if>
+      <if test="id == 'DSN'">'DSN'<include refid="idInsert"></include>'DSN'</if>
+      <if test="id == 'JIL'">'JIL'<include refid="idInsert"></include>'JIL'</if>
+      <if test="id == 'DEV'">'DEV'<include refid="idInsert"></include>'DEV'</if>
+    ),
+    #{category},
+    'n',
+    #{title},
+    #{regUser},
+    #{title},
+    '123123',
+    DEFAULT,
+    1,
+    null);
+</insert>
 
 
 <select id="selectBoardList" resultType="CustomMap">
@@ -107,9 +145,6 @@ SELECT * from BOARD;
 
 </select>
 
-<insert id="insertBoard">
-INSERT into BOARD values(nextval(seq_board),'자게','y','자게제목','김씨','내용입니다','456',sysdate(),null,null);
-</insert>
 
 
 

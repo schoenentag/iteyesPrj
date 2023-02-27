@@ -25,6 +25,11 @@ public class BoardController {
     String goBoard() {
         return "board/boardList";
     }
+    // 게시글 단건 페이지 이동
+    @RequestMapping("/goBoardOne.do")
+    String goBoardOne() {
+        return "board/boardOne";
+    }
 
     
     // 전체 게시글 목록
@@ -39,7 +44,7 @@ public class BoardController {
         String uType = formData.get("uType"); // 카테고리 구분
 
         String schId = formData.get("columns[0][search][value]");
-        String schCartegory = formData.get("columns[1][search][value]");
+        String schCategory = formData.get("columns[1][search][value]");
         String schNoticeYn = formData.get("columns[2][search][value]");
         String schTitle = formData.get("columns[3][search][value]");
         String schContent = formData.get("columns[4][search][value]");
@@ -64,7 +69,7 @@ public class BoardController {
         cri.put("uType", uType);
 
         cri.put("schId", schId);
-        cri.put("schCartegory", schCartegory);
+        cri.put("schCategory", schCategory);
         cri.put("schNoticeYn", schNoticeYn);
         cri.put("schTitle", schTitle);
         cri.put("schContent", schContent);
@@ -86,8 +91,21 @@ public class BoardController {
         return vo;
     }
 
+    // 게시글 단건 조회
+    @ResponseBody
+    @RequestMapping("/boardOne.do")
+    public Map<?, ?> boardOne(@RequestParam("id") String id) {
+        System.out.println(id);
+//        model.addAttribute("id", service.boardOne(id));
+        return service.boardOne(id);
+    }
     
-    
+    // 게시글 등록
+    @RequestMapping("/boardInsertProc.do")
+    public String boardInsertProc(@RequestParam Map<?,?> map) throws Exception {
+        service.boardInsertProc(map);
+        return "redirect:goBoard.do";
+    }
     
     
     
@@ -100,13 +118,6 @@ public class BoardController {
         return service.selectBoardList();
     }
 
-    @RequestMapping("/insertBoard.do")
-    void insertBoard() throws Exception {
-        System.out.println("인서트");
-        service.insertBoard(null);
-
-    }
-    
     @ResponseBody
     @RequestMapping("/ex1.do")
     void ex1(@RequestBody Map<?,?> vo) throws Exception {

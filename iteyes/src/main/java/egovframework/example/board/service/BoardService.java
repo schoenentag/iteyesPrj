@@ -9,16 +9,11 @@ public interface BoardService {
     int boardInfoCnt(Map<?, ?> cri);
     List<Map<String, String>> boardInfoProc(Map<?, ?> cri);
     
+    // 게시글 단건 조회
+    Map<?, ?> boardOne(String id);
     
-    
-    /**
-     * 글을 등록한다.
-     * 
-     * @param vo - 등록할 정보가 담긴 BoardVO
-     * @return 등록 결과
-     * @exception Exception
-     */
-    void insertBoard(BoardVO vo) throws Exception;
+    // 게시글 등록
+    void boardInsertProc(Map<?,?> map) throws Exception;
 
     /**
      * 글을 수정한다.
@@ -55,6 +50,9 @@ public interface BoardService {
      * @exception Exception
      */
     List<Map<?, ?>> selectBoardList() throws Exception;
+    
+    
+
 
     /**
      * 글 총 갯수를 조회한다.

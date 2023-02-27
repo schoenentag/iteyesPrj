@@ -1,0 +1,167 @@
+
+.wrap{
+    width: 1000px;
+    margin: 0 auto;
+
+}
+.header{
+    
+    margin-top: 30px;;
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+    display: flex;
+    padding: 10px 0;
+}
+
+.box_category_name, .box_name_text, .box_days{
+    /* border: 1px solid #000;
+    border-radius: 4px; */
+    padding: 10px;
+    margin: 0 5px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.box_category_name{
+    width: 10%;
+}
+
+.box_name_text{
+    width: 60%;
+}
+
+.box_days{
+    width: 30%;
+    text-align: right;
+}
+
+.user_name_wrap{
+    display: flex;
+    justify-content: flex-end;
+    margin: 16px 0;
+    
+}
+
+
+.user_name, .cont, .user_name_para, .cont_para {
+    border: 1px solid #000;
+    border-radius: 4px;
+    padding: 10px;
+    
+    margin-right: 4px;
+}
+
+.user_ic img{
+    
+    width: 30px;
+    margin-top: 4px;
+    margin-right: 4px;
+}
+
+.user_content_wrap{
+
+}
+
+.board_detail{
+    height: 200px;
+    border: 1px solid #000;
+    border-radius: 4px;
+    margin-bottom: 10px;
+
+}
+
+.file{
+    border: 1px solid #000;
+    border-radius: 4px;
+    padding: 6px;
+}
+
+.button_wrap{
+    /* border-top: 1px solid #000; */
+   margin-top: 10px;
+   padding-top: 10px;
+  
+    
+    
+}
+
+.button_wrap{
+    display: flex;
+    justify-content: flex-end;
+    position: relative;
+}
+
+.button_1{
+    position: absolute;
+    left: 0;
+}
+
+.button_1, .button_2, .button_3{
+   
+    border-radius: 4px;
+    padding: 4px 10px;
+    background: #000;
+    color: #fff;
+    margin-right: 4px;
+}
+
+.main_comment .comment_total{
+    margin: 20px 0;
+    background: gray;
+}
+
+.comment_user {
+    display: flex;
+    border: 1px solid #ddd;
+    
+}
+
+.comment_name{
+    width: 10%;
+    border-right: 1px solid #ddd;
+    padding:4px;
+}
+
+.comment_days{
+    width: 30%;
+    border-right: 1px solid #ddd;
+    padding:4px;
+}
+.comment_link{
+    display: flex;
+    line-height: 20px;
+}
+
+.comment_link li a{
+    padding: 0 6px;
+    font-weight: bold;
+}
+
+.comment_detail{
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    height: 100px;
+    margin: 4px 0;
+}
+
+.comment_my_detail{
+    width: 80%;
+}
+
+.comment_d li a{
+    text-align: center;
+}
+
+.comment_my, .comment_d{
+    height: 50px;
+    line-height: 46px;
+}
+
+.comment_d li a{
+    font-size: 14px;
+}
+
+.comment_my_name{
+    font-size: 14px;
+    font-weight: bold;
+}

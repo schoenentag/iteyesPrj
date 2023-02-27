@@ -13,8 +13,11 @@ public interface BoardMapper {
     int boardInfoCnt(Map<?, ?> cri);
     List<Map<String, String>> boardInfoProc(Map<?, ?> cri);
     
+    // 게시글 단건 조회
+    Map<?, ?> boardOne(String id);
     
-    
+    // 게시글 등록
+    void boardInsertProc(Map<?,?> map) throws Exception;
     /**
      * 글을 등록한다.
      * 

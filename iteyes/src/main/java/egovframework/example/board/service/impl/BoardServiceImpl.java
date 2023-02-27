@@ -16,12 +16,6 @@ public class BoardServiceImpl implements BoardService {
 	BoardMapper mapper;
 
 	@Override
-	public void insertBoard(BoardVO vo) throws Exception {
-		System.out.println("인서트보드 임플");
-		mapper.insertBoard(vo);
-	}
-
-	@Override
 	public void updateBoard(BoardVO vo) throws Exception {
 
 	}
@@ -49,6 +43,15 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public List<Map<String, String>> boardInfoProc(Map<?, ?> cri) {
         return mapper.boardInfoProc(cri);
+    }
+
+    @Override
+    public Map<?, ?> boardOne(String id) {
+        return mapper.boardOne(id);
+    }
+
+    @Override
+    public void boardInsertProc(Map<?, ?> map) throws Exception {
     }
 
 
