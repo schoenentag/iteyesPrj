@@ -1,5 +1,6 @@
 package egovframework.example.board.web;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,22 +27,22 @@ public class CommentController {
 	
 	//등록
 	@PostMapping("/insert.do")
-	public int insertComment(@RequestBody CommentVO vo) throws Exception {
-		System.out.println(vo);
-		return service.insertComment(vo);
+	public int insertComment(@RequestBody CommentVO commentInfo) throws Exception {
+		System.out.println(commentInfo);
+		return service.insertComment(commentInfo);
 	}
 	//수정
 	@PostMapping("/update.do")
-	public int updateComment(@RequestBody CommentVO vo) throws Exception{
+	public int updateComment(@RequestBody CommentVO commentInfo) throws Exception{
 		System.out.println("Update Controller");
-		return service.updateComment(vo);
+		return service.updateComment(commentInfo);
 	}
 	
 	//삭제
 	@PostMapping("/delete.do")
-	public int deleteComment(@RequestBody Map<?,?> info) throws Exception{
+	public int deleteComment(@RequestBody Map<?,?> commentInfo) throws Exception{
 		System.out.println("Delete Controller");
-		int targetId = Integer.parseInt( (String) info.get("id")) ;
+		int targetId = Integer.parseInt( (String) commentInfo.get("id")) ;
 		System.out.println("삭제할 댓글 ID : "+ targetId);
 		CommentVO vo = new CommentVO();
 		vo.setId(targetId);
@@ -51,14 +52,21 @@ public class CommentController {
 	//조회
 	@ResponseBody
 	@GetMapping("/getList.do")
-	public List<CommentVO> getComment(@RequestParam String boardId, int parentId) throws Exception {
-		System.out.println("controller");
-		CommentVO vo = new CommentVO();
-		vo.setBoardId(boardId);
-		vo.setParentId(parentId);
-		List<CommentVO> list = service.getComment(vo);
-		System.out.println(list);
-		return list;
+	public Map<String, Object> getComment(@RequestParam String boardId,
+									@RequestParam int parentId,
+									@RequestParam(required = false) int pageNum) throws Exception {
+		System.out.println("Select Comment Controller");
+		Map<String, Object> info = new HashMap<String, Object>();
+		info.put("boardId", boardId);		//게시판 ID
+		info.put("parentId", parentId);		//상위 댓글 번호
+		info.put("start", (pageNum-1)*10);	//시작 위치
+		info.put("length", 10);				//한 페이지 출력 개수 10개
+		List<CommentVO> list = service.getComment(info);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("list", list);
+		map.put("listSize", service.commentNum(info));
+		return map;
 	}
 	
 	@GetMapping("/word.do")

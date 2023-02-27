@@ -1,6 +1,7 @@
 package egovframework.example.board.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -33,8 +34,13 @@ public class CommentServiceImpl extends EgovAbstractServiceImpl implements Comme
 	}
 
 	@Override
-	public List<CommentVO> getComment(CommentVO vo) throws Exception {
-		return mapper.getComment(vo);
+	public List<CommentVO> getComment(Map<?,?> info) throws Exception {
+		return mapper.getComment(info);
+	}
+
+	@Override
+	public int commentNum(Map<?, ?> map) throws Exception {
+		return mapper.commentNum(map);
 	}
 	
 	

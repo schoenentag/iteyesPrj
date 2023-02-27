@@ -34,12 +34,20 @@
 		DELETE FROM COMMENT WHERE id = #{ID}
 	</delete>
 	
-	<select id="getComment" parameterType="CommentVO" resultType="map">
+	<select id="getComment" resultType="map">
 		SELECT id, board_id, reg_user, content, dt, parent_id
 		FROM COMMENT
-		WHERE board_id = #{boardId}
-		AND parent_id = #{parentId}
+		WHERE 	board_id = #{boardId}
+				AND parent_id = #{parentId}
+		ORDER BY dt desc
+		<if test="start!=null">
+			LIMIT #{start}, #{length} 
+		</if>
 	</select>
 	
+	<select id="commentNum" resultType="int">
+		SELECT COUNT(*) FROM COMMENT 
+		WHERE board_id = #{boardId} AND parent_id = #{parentId} 
+	</select>
 
 </mapper>
