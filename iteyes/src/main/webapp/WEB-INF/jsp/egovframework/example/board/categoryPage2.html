@@ -2,7 +2,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.3.min.js"
+	integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
+	crossorigin="anonymous"></script>
 <title>게시판 카테고리</title>
 <link rel="stylesheet" href="/css/board/boardStyle.css">
 </head>
@@ -26,8 +29,8 @@
                     <button>검색</button>
                    
                </div>
-                <li><a href="#">삭제</a></li>
-                <li><a href="#">등록</a></li>
+                <li><a href="#" onclick="delectCall()">삭제</a></li>
+                <li><a href="/categoryInsertForm.do">등록</a></li>
                 <li><a href="#">전체글보기</a></li>
             </ul>
         </div>
@@ -47,7 +50,7 @@
 	                <div id="contentArea" name="contentArea" >
 	                </div>
             </div>
-            <div class="board_page">
+            <div class="board_page" id="paginationArea" name="paginationArea">
             </div>
 
             <!-- <div class="bt_wrap">
@@ -62,30 +65,9 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	ajaxCategoryCall();
-	
  });
- 
- 
- //상위 그룹이벤트로 fn_paging 호출하기
- 
-function fn_paging(num){
-	console.log("fn_paging(num) 함수 실행");
-	
-	//ajax로 값넘겨서 페이지 이동하기
-	let curPage = {"curPage" : num}
-	  $.ajax({
-		  url: '/pagination.do',
-	      type: 'post',
-	      data : JSON.stringify(curPage),
-		  datatype: "JSON",
-		  success: function(res) {
-		      console.log("fn_paging(num) 통신 성공" + res);
-		  },fail: function(result) {
-	            fail(error); 
-	        } 
-	    });//ajax끝 
-}
 
+/*목록 출력하는 ajax와 페이징처리 되는 ajax를 순서대로 호출한다.*/
 function ajaxCategoryCall(){
 	 let option; //검색할 옵션 값을 담을 변수; N(이름), D(설명), U(관리자명)
 	 let keyword;
@@ -105,7 +87,7 @@ function ajaxCategoryCall(){
 					  let td_html = "";
 					  
 					  for (list of data){
-					      td_html += `<input type="checkbox" class="cbox">
+					      td_html += `<input type="checkbox" class="cbox" name="cbox">
 		                    <div class="num">${list.id}</div>
 		                    <div class="title"><a href="#">${list.name}</a></div>
 		                    <div class="writer">${list.description}</div>
@@ -120,37 +102,42 @@ function ajaxCategoryCall(){
 				  error : function(err){
 				    console.log(err);
 				}
-			}).then((arg) =>{    // 두번째 ajax를 실행한다.
+			}).then((arg) =>{    // 두번째 ajax를 실행한다(페이징 처리)
 				let board_html = "";
-
+			   // let data = {"curPage" : pageNum}; 
+			
 			    $.ajax({
-			        url: '/pagination.do',
-			        type: 'get',
-			        //data : JSON.stringify(list),
+			        url: '/pagination.do?',
+			        type: 'post',
+			        //data : JSON.stringify(data),
 					datatype: "JSON",
 			        success: function(res) {
 			            console.log("두번째 ajax : ", res); // 성공하면
+			            
 			            if(res.curRange != 1){//맨처음
-				            board_html+= `<a href="" class="bt first" onClick="fn_paging(1)"><<</a> 
-				                           <a href="" class="bt prev" onClick="fn_paging('${res.prevPage }')"><</a>`;
+				            board_html+= `<a href="" class="bt first" onClick="fn_paging(1)" value="1"><<</a> 
+				                           <a href="" class="bt prev" onClick="fn_paging('${res.prevPage}')" value="${res.prevPage}"><</a>`;
 			            } 
 			                		  
 			            for (let i = res.startPage; i <= res.endPage; i++){
 				                              console.log(i)
 			            	if( i == res.curPage){
 			            		board_html+= `<a href="" class="num on" id="pageNum" name="pageNum"
-		                              onClick="fn_paging('${i}')">${i}</a> `;
+		                              value="${i}">${i}</a> `;
 			            	}else{
 				                board_html+= `<a href="" class="num" id="pageNum" name="pageNum"
-				                              onClick="fn_paging('${i}')">${i}</a> `;
+				                	value="${i}">${i}</a> `;
 			            	}
 			            }
 			            
 			            if( res.curPage != res.pageCnt & res.pageCnt > 0 ){
-			                board_html+=`<a href="" class="bt next" onClick="fn_paging('${res.nextPage }')">></a>
-			                             <a href="" class="bt last" onClick="fn_paging('${res.pageCnt  }')">>></a>`;
+			                board_html+=`<a href="" class="bt next" onClick="fn_paging('${res.nextPage }')" value="${res.nextPage }">></a>
+			                             <a href="" class="bt last" onClick="fn_paging('${res.pageCnt  }')" value="${res.pageCnt }">>></a>`;
 			            }
 			            $(".board_page").append(board_html);
+			            
+			          
+			            			 
 			            
 			        },
 			        fail: function(result) {
@@ -164,8 +151,47 @@ function ajaxCategoryCall(){
 
 	}//ajaxCategoryCall 끝
 	
+	  $("#paginationArea").on("click",".num",
+			    function(){
+				 console.log("일단 실행됨");
+		});
+
 	
-			
+	// let thiss = $(this);
+	 //console.log(thiss);
+	    //let curPage = $(this).val();
+	   // console.log(curPage);
+			 
+	 /*function fn_paging(num){
+			console.log("fn_paging(num) 함수 실행");
+			let curPage = {"curPage" : num}
+			  $.ajax({
+				  url: '/pagination.do',
+			      type: 'post',
+			      data : JSON.stringify(curPage),
+				  datatype: "JSON",
+				  success: function(res) {
+				      console.log("fn_paging(num) 통신 성공" + res);
+				  },fail: function(result) {
+			            fail(error); 
+			        } 
+			    });//ajax끝 */
+	
+//=========================	
+/* 삭제 */
+
+function delectCall(){
+	console.log("여러 행 삭제기능 구현중");
+	
+	var checkBoxArr = []; 
+	//현재 반응없음...
+	$("input:checkbox[name='cbox']:checked").each(function() {
+	  consol.log($(this).val());
+		  //checkBoxArr.push($(this).val());     // 체크된 것만 값을 뽑아서 배열에 push
+	  console.log(checkBoxArr);
+	  });
+			    
+}
  
 </script>
 </body>

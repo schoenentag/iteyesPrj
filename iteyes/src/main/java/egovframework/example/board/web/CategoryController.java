@@ -63,6 +63,17 @@ public class CategoryController {
 		return pn;
 	}
 	
+	/* 등록 페이지 이동 */
+	@RequestMapping("/categoryInsertForm.do")
+	public String categoryDetailPage() {
+		return "board/categoryInsert";
+	}
+	/* 삭제 */
+	@RequestMapping("/categoryDelete.do")
+	public int categoryDelete(Map<String,String> map) throws Exception {
+		return categoriService.jsonCategoryDelete(map);
+	}
+	
 	
 	/* 단건 조회 */
 	@ResponseBody
