@@ -22,7 +22,7 @@ import org.egovframe.rte.psl.dataaccess.mapper.Mapper;
 //인터페이스 메소드가 query id로 호출되는 방식
 public interface CategoryMapper {
 	/* 전체 조회 */
-	List<Map<String, String>> jsonCategoryList() throws Exception; 
+	List<Map<String, String>> jsonCategoryList(Map<String, Object> param) throws Exception; 
     /* 단건 조회 */
 	Map<String, String> jsonCategoryDetail(Map<String,String> map) throws Exception;
 	/* 등록 */
@@ -33,5 +33,7 @@ public interface CategoryMapper {
 	int jsonCategoryDelete(Map<String, String> map) throws Exception;
 	/* 검색 */
 	List<Map<String, String>> jsonCategorySearch(Map<String, String> map) throws Exception; 
+	/* 전체글 cnt*/
+	int CategorListyCnt() throws Exception;
 	
 }

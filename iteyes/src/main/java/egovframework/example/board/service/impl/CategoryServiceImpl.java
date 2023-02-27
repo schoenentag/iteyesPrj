@@ -1,14 +1,15 @@
 package egovframework.example.board.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import egovframework.example.board.service.CategoryService;
+import egovframework.example.board.service.Pagination;
 @Service("categoryService")
 //@Resource(name="categoryMapper")
 public class CategoryServiceImpl implements CategoryService {
@@ -18,8 +19,8 @@ public class CategoryServiceImpl implements CategoryService {
 	
 	/* 전체 조회*/
 	@Override
-	public List<Map<String, String>> jsonCategoryList() throws Exception {
-		return cMap.jsonCategoryList();
+	public List<Map<String, String>> jsonCategoryList(Map<String, Object> param) throws Exception {
+		return cMap.jsonCategoryList(param);
 	}
 
 	/* 단건 조회 */
@@ -50,6 +51,12 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public List<Map<String, String>> jsonCategorySearch(Map<String, String> map) throws Exception {
 		return cMap.jsonCategorySearch(map);
+	}
+
+	/* 전체글 cnt */
+	@Override
+	public int CategorListyCnt() throws Exception {
+		return cMap.CategorListyCnt();
 	}
 
 }
