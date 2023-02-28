@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.3.min.js"
+	integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
+	crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/css/board/sub.css">
+<title>카테고리 등록</title>
+</head>
+<body>
+<div class="board_sub_wrap">
+        <div class="board_title">
+            <strong>게시판 등록</strong>
+                <p>게시판을 등록하는 서브페이지</p>
+        </div>
+
+        <table id="tbl" name="tbl">
+            <tr>
+                <th class="board_sub_bg">카테고리명</th>
+                <td>
+                  <input type="text" class="board_1" id="name" name="name">
+                </td>        
+            </tr>
+            <tr>
+                <th class="board_sub_bg">카테고리 설명</th>
+                <td >
+                  <input type="text"  class="board_2" id="description" name="description">
+                </td>       
+            </tr>
+            <tr>
+                <th class="board_sub_bg">사용여부</th>
+                <td>
+                    <select id="useYn" name="useYn" style="width: 100px; height: 50px; margin-left: 4px;">
+                        <option value="Y">Y</option>
+                        <option value="N">N</option>
+                    </select>
+               </td>      
+            </tr>
+            <tr>
+                <th class="board_sub_bg">등록자</th>
+                <td >
+                    <input type="text" class="board_3" id="regUser" name="regUser" value="ADMIN" readonly>
+                </td>       
+            </tr>
+           
+        </table>
+
+        <div>
+            <button onclick="insertCall()">등록</button>
+        </div>
+    </div>
+<Script type="text/javascript">
+
+
+
+function insertCall(){
+	
+	let name = $('#name').val();
+	let description = $('#description').val();
+	let useYn = ($("select[name=useYn] option:selected")).val();
+	let regUser = $('#regUser').val();
+
+	let data = {
+			"name" : name, 
+			"description" : description, 
+			"useYn" : useYn, 
+			"regUser" : regUser
+	}
+	console.log(data);
+	
+	
+	let insertText = confirm("등록하겠습니까?");
+	
+    if(insertText){
+    	console.log(data);
+        $.ajax({
+            url: '/categoryInsert.do',
+            type: 'post',
+            contentType: 'application/json; charset=utf-8',
+            data : JSON.stringify(data),
+    		//datatype: "JSON",
+    		success: function(res) {
+    			//if (res == 1)
+    				console.log("성공")
+    				console.log(res);
+    			    location.href = "/categoryPage2.do";
+    			
+             },
+             error : function(err){
+ 			    console.log(err);
+    		}                                             
+    	});
+	   
+    }else{
+        alert("등록을 취소하였습니다.");
+	 
+    }
+}
+	
+
+</Script>    
+
+</body>
+</html>

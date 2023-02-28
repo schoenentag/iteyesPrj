@@ -26,9 +26,11 @@ public interface CategoryMapper {
 	/* 전체 조회 */
 	List<Map<String, String>> jsonCategoryList(Map<String, Object> param) throws Exception; 
     /* 단건 조회 */
-	CategoryVO jsonCategoryDetail(String id) throws Exception;
+	Map<String, String> jsonCategoryDetail(String id) throws Exception;
 	/* 등록 */
 	int jsonCategoryInsert(Map<String, String>map) throws Exception;
+	/* 등록2 */
+	int jsonCategoryInsert2(CategoryVO vo) throws Exception;
 	/* 수정 */
 	int jsonCategoryUpdate(Map<String, String> map) throws Exception;
 	/* 삭제 */

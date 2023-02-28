@@ -16,23 +16,6 @@
         </div>
 
         <table id="tbl" name="tbl">
-            <tr>
-                <th class="board_sub_bg">게시판명</th>
-                <td id="name" name="name"></td>        
-            </tr>
-            <tr>
-                <th class="board_sub_bg">게시판 설명</th>
-                <td id="description" name="description"></td>       
-            </tr>
-            <tr>
-                <th class="board_sub_bg">사용여부</th>
-                <td id="useYn" name="useYn"></td>      
-            </tr>
-            <tr>
-                <th class="board_sub_bg">등록자</th>
-                <td id="regUser" name="regUser"></td>       
-            </tr>
-           
         </table>
 
         <div>
@@ -47,26 +30,37 @@
    const urlParams = url.searchParams; //파라미터 값 읽기
    let id = urlParams.get('id'); //id 값만 가져오기
    
-   console.log("url : ",url);
-   console.log("urlParams : ", urlParams);
-   
    let data = {"id" : id};
-   console.log("id : ", id );
-   console.log("data : ", data);
    let td_html = "";
    
     $.ajax({
         url: '/categoryDetailList.do?id='+id,
         type: 'get',
 		datatype: "JSON",
-		success: function(res) {
+		success: function(list) {
 			console.log("통신은 됨...")
-			console.log(res);
+			td_html +=`<tr>
+                <th class="board_sub_bg">게시판명</th>
+                <td><input type="text" id="name" name="name" value="${list.name}" readonly></td>
+            </tr>
+            <tr>
+                <th class="board_sub_bg">게시판 설명</th>
+                <td><input type="text" id="description" name="description" value="${list.description}" readonly></td>
+            </tr>
+            <tr>
+                <th class="board_sub_bg">사용여부</th>
+                <td><input type="text" id="useYn" name="useYn" value="${list.useYn}" readonly></td>
+            </tr>
+            <tr>
+                <th class="board_sub_bg">등록자</th>
+                <td><input type="text" id="regUser" name="regUser" value="${list.regUser}" readonly></td>
+            </tr>`;
+			$("#tbl").append(td_html);
          },
-	    fail: function(result) {
-		     fail(error); 
-		}                                             
-	});// 두번째 ajax 끝
+         error : function(err){
+			    console.log(err);
+		}                                            
+	});
 </script>    
 </body>
 </html>

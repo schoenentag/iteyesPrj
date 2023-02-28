@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -57,7 +58,6 @@ public class CategoryController {
 	@ResponseBody
 	@RequestMapping("/pagination.do")
 	public Pagination pagination(@RequestParam(defaultValue="1") int curPage) throws Exception{
-		System.out.println("****************************************** /pagination.do curpage : "+ curPage);
 		/*전체글 갯수 조회*/
 		int listCnt = categoriService.CategorListyCnt();
 		/*pagination 인스턴스 생성 (param :  전체 개시글 개수, 현재 페이지*/ 
@@ -67,11 +67,25 @@ public class CategoryController {
 	}
 	
 	/* 등록 페이지 이동 */
-	@RequestMapping("/categoryInsertForm.do")
+	@GetMapping("/categoryInsertForm.do")
 	public String categoryInsertForm() {
 		System.out.println("categoryInsertForm controller");
 		return "board/categoryInsertForm";
 	}
+	@ResponseBody
+	@RequestMapping(value="/categoryInsert.do", method=RequestMethod.POST)
+	public int categoryInsert(@RequestBody Map<String,String> map) throws Exception{
+        
+		CategoryVO vo = new CategoryVO();
+		vo.setName(map.get("name"));
+		vo.setDescription(map.get("description"));
+		vo.setUseYn(map.get("useYn"));
+		vo.setRegUser(map.get("regUser"));
+		System.out.println("==================vo :"+vo);
+		
+		return categoriService.jsonCategoryInsert2(vo);
+	}
+	
 	/* 삭제 */
 	@RequestMapping("/categoryDelete.do")
 	public int categoryDelete(Map<String,String> map) throws Exception {
@@ -87,11 +101,10 @@ public class CategoryController {
 	/* 단건 조회 */
 	@ResponseBody
 	@GetMapping("/categoryDetailList.do")
-	public CategoryVO categoryDetailList(@RequestParam String id) throws Exception{
+	public Map<String, String> categoryDetailList(@RequestParam String id) throws Exception{
 		System.out.println(id);
-		CategoryVO test = categoriService.jsonCategoryDetail(id);
-		System.out.println("@#$@#$@#$@#$@#%%@#$%#$%#$test"+test);
-		return null;
+		 
+		return categoriService.jsonCategoryDetail(id);
 		
 	}
 	

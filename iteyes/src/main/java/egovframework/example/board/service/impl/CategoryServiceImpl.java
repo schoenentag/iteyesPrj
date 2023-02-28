@@ -1,6 +1,5 @@
 package egovframework.example.board.service.impl;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import egovframework.example.board.service.CategoryService;
 import egovframework.example.board.service.CategoryVO;
-import egovframework.example.board.service.Pagination;
 @Service("categoryService")
 //@Resource(name="categoryMapper")
 public class CategoryServiceImpl implements CategoryService {
@@ -26,7 +24,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 	/* 단건 조회 */
 	@Override
-	public CategoryVO jsonCategoryDetail(String id)  throws Exception {
+	public Map<String, String> jsonCategoryDetail(String id)  throws Exception {
 		return cMap.jsonCategoryDetail(id);
 	}
 	
@@ -58,6 +56,11 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public int CategorListyCnt() throws Exception {
 		return cMap.CategorListyCnt();
+	}
+
+	@Override
+	public int jsonCategoryInsert2(CategoryVO vo) throws Exception {
+		return cMap.jsonCategoryInsert2(vo);
 	}
 
 }
