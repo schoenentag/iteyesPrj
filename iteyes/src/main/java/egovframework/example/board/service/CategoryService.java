@@ -14,9 +14,9 @@ public interface CategoryService {
 	int jsonCategoryInsert2(CategoryVO vo) throws Exception;
 	
 	/* 수정 */
-	int jsonCategoryUpdate(Map<String, String> map) throws Exception;
+	int jsonCategoryUpdate(CategoryVO vo) throws Exception;
 	/* 삭제 */
-	int jsonCategoryDelete(Map<String, String> map) throws Exception;
+	int jsonCategoryDelete(String id) throws Exception;
 	/* 검색 */
 	List<Map<String, String>> jsonCategorySearch(Map<String, String> map) throws Exception; 
 	/* 전체글 cnt*/

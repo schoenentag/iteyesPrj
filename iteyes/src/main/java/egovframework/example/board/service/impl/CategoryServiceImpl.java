@@ -36,14 +36,14 @@ public class CategoryServiceImpl implements CategoryService {
 
 	/* 수정 */
 	@Override
-	public int jsonCategoryUpdate(Map<String, String> map) throws Exception {
-		return cMap.jsonCategoryUpdate(map);
+	public int jsonCategoryUpdate(CategoryVO vo) throws Exception {
+		return cMap.jsonCategoryUpdate(vo);
 	}
 
 	/* 삭제 */
 	@Override
-	public int jsonCategoryDelete(Map<String, String> map) throws Exception {
-		return cMap.jsonCategoryDelete(map);
+	public int jsonCategoryDelete(String id) throws Exception {
+		return cMap.jsonCategoryDelete(id);
 	}
 
 	/* 검색 */

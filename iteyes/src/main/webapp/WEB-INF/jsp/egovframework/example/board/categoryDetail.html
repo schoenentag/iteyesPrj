@@ -19,7 +19,7 @@
         </table>
 
         <div>
-            <button>수정</button>
+            <button onclick="UpdateCall()">수정</button>
             <button>목록</button>
         </div>
 
@@ -30,8 +30,16 @@
    const urlParams = url.searchParams; //파라미터 값 읽기
    let id = urlParams.get('id'); //id 값만 가져오기
    
-   let data = {"id" : id};
    let td_html = "";
+   
+   let data = {"id" : id};
+   
+   var name = "";
+   var description = "";
+   var useYn = "";
+   var regUser = "";
+   
+   var newContent;
    
     $.ajax({
         url: '/categoryDetailList.do?id='+id,
@@ -41,19 +49,19 @@
 			console.log("통신은 됨...")
 			td_html +=`<tr>
                 <th class="board_sub_bg">게시판명</th>
-                <td><input type="text" id="name" name="name" value="${list.name}" readonly></td>
+                <td><input type="text" class="content" id="name" name="name" value="${list.name}" readOnly></td>
             </tr>
             <tr>
                 <th class="board_sub_bg">게시판 설명</th>
-                <td><input type="text" id="description" name="description" value="${list.description}" readonly></td>
+                <td><input type="text"  class="content" id="description" name="description" value="${list.description}" readOnly></td>
             </tr>
             <tr>
                 <th class="board_sub_bg">사용여부</th>
-                <td><input type="text" id="useYn" name="useYn" value="${list.useYn}" readonly></td>
+                <td id="oldUseYn"><input type="text"  class="content" id="useYn" name="useYn" value="${list.useYn}" readOnly></td>
             </tr>
             <tr>
                 <th class="board_sub_bg">등록자</th>
-                <td><input type="text" id="regUser" name="regUser" value="${list.regUser}" readonly></td>
+                <td><input type="text"  class="content" id="regUser" name="regUser" value="${list.regUser}" readOnly></td>
             </tr>`;
 			$("#tbl").append(td_html);
          },
@@ -61,6 +69,71 @@
 			    console.log(err);
 		}                                            
 	});
+
+/* 상세정보 수정*/
+$("#tbl").on("click",".content", function(e){
+	let tg = e.currentTarget;
+	console.log($(tg).attr('id'));
+	
+	let inputs = $(".content"); // 상세내용
+	
+	//readOnly 해제하여 수정 가능하도록 설정
+	for(let i = 0; i < inputs.length; i++ ){
+		//console.log("inputs[i].id : " ,inputs[i].id);
+		//console.log($(tg).attr());
+		if(inputs[i].id == "regUser"){
+		    inputs[i].readOnly = true; //등록자는 변경할 수 없음
+		}else{
+		    inputs[i].readOnly = false;
+		}
+		
+		/* 인식못함...
+		if($(tg).attr('id') == "useYN"){
+			console.log("ooooo")
+			console.log(inputs[i].id == "useYN");
+			let newTag = `<select id="useYn" name="useYn" style="width: 100px; height: 50px; margin-left: 4px;">
+	            <option value="Y">Y</option>
+	            <option value="N">N</option></select>`;
+			$('oldUseYn').append(newTag);
+			
+		}*/
+	}
+	
+	//새로운 값을 변수에 담는다.
+	name = $('#name').val();
+	description = $('#description').val();
+	useYn = ($("#useYn")).val();
+	regUser = $('#regUser').val();
+	
+	newContent = {
+		"id": id,
+	    "name" : name, 
+		"description" : description, 
+		"useYn" : useYn, 
+		"regUser" : regUser
+	}
+	
+})
+
+function UpdateCall(){	
+	console.log(newContent);
+		
+	    $.ajax({
+	    	url:'/categoryUpdate.do',
+	    	type:'post',
+	    	contentType: 'application/json; charset=utf-8',
+	    	data : JSON.stringify(newContent),
+	    	datatype: "JSON",
+	    	success : function(res){
+	    		location.href = "/categoryPage2.do";
+	    	},
+	    	error : function(err){
+	    		console.log(err);
+	    	}
+	    });
+
+	}
+/* 단건 수정 ajax*/
 </script>    
 </body>
 </html>

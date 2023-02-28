@@ -36,6 +36,7 @@
         UPDATE SAMPLE  
             SET NAME = #{name}, DESCRIPTION = #{description}, 
                 USE_YN = #{useYn}
+            WHERE ID = #{id}
     </update>
     
     <!-- 삭제 -->
