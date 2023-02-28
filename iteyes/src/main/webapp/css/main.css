@@ -191,7 +191,8 @@
     border-left: 0px;
     vertical-align: middle;
     line-height: 100%;
-    box-sizing:border-box;   
+    box-sizing:border-box;
+    
 }
 
 .comment_page div.bt{
@@ -224,6 +225,10 @@
     background-color: rgb(83, 27, 94)  ;
     border-radius: 3px;
     color: white;
+}
+
+.recomment_list{
+    padding-left: 50px;
 }
 
 .bt:hover {

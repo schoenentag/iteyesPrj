@@ -119,9 +119,9 @@
    
     //댓글 리스트 출력
     function getCommPage(boardId,parentId){
-        let parent = document.querySelector('#comment_list');
+    	let parent = document.querySelector('#comment_list');
         parent.textContent = '';    //기존 리스트 삭제
-        let url = `/comment/getList.do?boardId=${boardId}&parentId=0&pageNum=${commCurrentPage}`
+        let url = `http://127.0.0.1:8081/comment/getList.do?boardId=${boardId}&parentId=0&pageNum=${commCurrentPage}`
         $.ajax({
             type: 'get',
             url : url,
@@ -144,10 +144,11 @@
                                             <li value=${item.id} class='bt update_btn invisible'>수정완료</li>
                                         </ul>
                                     </ul>
-                                    <textarea class="comment_detail" readonly>${item.content}</textarea>                                
+                                    <textarea class="comment_detail" readonly>${item.content}</textarea> 
+                                    <div class="recomment_list" id="recomment_list${item.id}"></div>                               
                                 </div>`
-                    parent.innerHTML = addHtml;                   
-                });
+                    });
+                    parent.innerHTML = addHtml;             
                 commTotalPages = Math.ceil( data.listSize/10) ; //총 페이지 수 : 한 페이지에 10개 댓글 출력        
                 commArticlePage();
             }, 
@@ -157,8 +158,9 @@
         });
     } 
     
+    //페이지 블럭 생성
     function commArticlePage(){
-        let commentPage = document.querySelector('.comment_page');
+    	let commentPage = document.querySelector('.comment_page');
         commentPage.textContent = '';
         commStartPage = Math.ceil(commCurrentPage / commPagingCount) ;
         commEndPage = commStartPage + commTotalPages -1;
@@ -180,12 +182,15 @@
 
     //동적으로 생성된 태그의 클릭 이벤트
     function controlComment(e){
-        let btnName = e.target;
+    	let btnName = e.target;
         if (btnName.innerHTML == '수정' & btnName.classList.contains('bt')) updateState(e);
         else if (btnName.innerHTML == '삭제' & btnName.classList.contains('bt')) deleteComment(e);
         else if (btnName.innerHTML == '답글' & btnName.classList.contains('bt')) {
             if(!btnName.classList.contains('reply_on')) replyComment(e);    //대댓글 오픈
-            else btnName.classList.remove('reply_on');  //대댓글 접기
+            else {
+                btnName.classList.remove('reply_on');  //대댓글 접기
+                document.getElementById(`recomment_list${e.target.value}`).innerHTML='';
+            }
         }
         else if (btnName.innerHTML == '수정완료' & btnName.classList.contains('bt')) updateComment(e);
         else if (btnName.classList.contains('bt') & btnName.classList.contains('first')) {
@@ -213,64 +218,67 @@
     }
 
     function insertComment(parentId){
-        //let form = document.getElementById('comm_insert_form');
-        let regUser = document.getElementsByName('regUser')[0];
+    	let regUser = document.getElementsByName('regUser')[0];
         let content = document.getElementsByName('content')[0];
         if(regUser.value == '' || content.value == ''){
-            miniAlert.fire({icon : 'error',
-                            title : '작성자명과 내용을 입력하세요' })
+            miniAlert.fire({icon : 'error', title : '작성자명과 내용을 입력하세요' })
         }else{
             commentInfo.regUser = regUser.value;
             commentInfo.content = content.value;    
-            console.log(commentInfo)
+            commentInfo.parentId = parentId;
             $.ajax({
-            type: 'post',
-            url : `/comment/insert.do`,
-            data : JSON.stringify(commentInfo),
-            contentType :  'application/json; charset=utf-8',
-            datatype: "json",
-            success : function(data) {
-                getCommPage(commentInfo.boardId,0); //목록 재로딩
-                content.value='';   //내용 삭제
-                miniAlert.fire({icon : 'success', title : '댓글이 등록되었습니다.'})
-            }
-        })
+	            type: 'post',
+	            url : `http://127.0.0.1:8081/comment/insert.do`,
+	            data : JSON.stringify(commentInfo),
+	            contentType :  'application/json; charset=utf-8',
+	            datatype: "json",
+	            success : function(data) {
+	                getCommPage(commentInfo.boardId,0); //목록 재로딩
+	                content.value='';   //내용 삭제
+	                miniAlert.fire({icon : 'success', title : '댓글이 등록되었습니다.'})
+	            }
+	        })
         }
     }
 
     function updateState(e){
-        let updateBtn = e.target.parentNode.lastChild.previousSibling; //수정확인버튼
-        updateBtn.classList.remove('invisible'); //수정확인 버튼 활성화
-        let content =  e.target.parentNode.parentNode.nextSibling.nextSibling;       
-        content.readOnly = false;   //수정 가능 상태로
-        content.focus();    //커서 이동     
+    	let updateBtn = e.target.parentNode.lastChild.previousSibling; //수정확인버튼
+        if(updateBtn.classList.contains('invisible')){
+            updateBtn.classList.remove('invisible'); //수정확인 버튼 활성화
+            let content =  e.target.parentNode.parentNode.nextSibling.nextSibling;       
+            content.readOnly = false;   //수정 가능 상태로
+            content.focus();    //커서 이동     
+        }else{
+            updateBtn.classList += ' invisible';    //수정확인 버튼
+            e.target.parentNode.parentNode.nextSibling.nextSibling.readOnly = true;
+        }
     }
 
     function updateComment(e){
-        let content =  e.target.parentNode.parentNode.nextSibling.nextSibling; //수정내용
+    	let content =  e.target.parentNode.parentNode.nextSibling.nextSibling; //수정내용
         content.readOnly = true;    //수정불가
         commentInfo.id = e.target.value;
         commentInfo.content = content.value;
-        commentInfo.parentId = 0;
         $.ajax({
-                type: 'post',
-                url : `/comment/update.do`,
-                data : JSON.stringify(commentInfo),
-                contentType :  'application/json; charset=utf-8',
-                datatype: "json",
-                success : function(data) {
-                    console.log('ajax 통신 성공');
-                    miniAlert.fire({icon : 'success', title : '댓글이 수정되었습니다.'})
-                }
-            })
+            type: 'post',
+            url : `http://127.0.0.1:8081/comment/update.do`,
+            data : JSON.stringify(commentInfo),
+            contentType :  'application/json; charset=utf-8',
+            datatype: "json",
+            success : function(data) {
+                console.log('ajax 통신 성공');
+                updateState(e);
+                miniAlert.fire({icon : 'success', title : '댓글이 수정되었습니다.'})
+            }
+        })
     }
 
     function deleteComment(e){
-        commentInfo.id = e.target.value;
-        let content = e.target.parentNode.parentNode.parentNode.lastChild.previousSibling.innerHTML;
+    	commentInfo.id = e.target.value;
+        let content = e.target.parentNode.parentNode.nextSibling.nextSibling;
         Swal.fire({
             title: '댓글을 삭제하시겠습니까?',
-            text: content,
+            text: content.innerHTML,
             icon: 'warning',
             showCancelButton: true,         // cancel버튼 보이기
             confirmButtonText: '삭제하기',  // confirm 버튼 텍스트
@@ -279,7 +287,7 @@
             if (result.isConfirmed) {       //confirm
                 $.ajax({
                     type: 'post',
-                    url : `/comment/delete.do`,
+                    url : `http://127.0.0.1:8081/comment/delete.do`,
                     data : JSON.stringify(commentInfo),
                     contentType :  'application/json; charset=utf-8',
                     datatype: "json",
@@ -293,17 +301,17 @@
     }
 
     function replyComment(e){
-        e.target.classList += 'reply_on';   //대댓글 리스트 오픈 표시
-        let parent = e.target.parent;
-        
-        /* $.ajax({
+    	e.target.classList += ' reply_on';   //대댓글 리스트 오픈 표시
+        let parentId = e.target.value;
+        let parent = document.getElementById(`recomment_list${parentId}`);
+        console.log(parentId)
+        $.ajax({
             type: 'get',
-            url : `/comment/getList.do?boardId=${boardId}&parentId=${parent}&pageNum=${commCurrentPage}`,
+            url : `http://127.0.0.1:8081/comment/getList.do?boardId=${commentInfo.boardId}&parentId=${parentId}&pageNum=-1`,
             datatype: "json",
             success : function(data) {
                 console.log('ajax 통신 성공');
                 console.log(data);
-                document.querySelector('.comment_total').innerHTML = `총 댓글 ${data.listSize}개`;
                 let addHtml = '';
                 data.list.forEach(item => {
                     let regDate =  moment(item.dt).format('YYYY/MM/DD HH:mm:ss');
@@ -311,24 +319,28 @@
                                     <ul class="comment_user">
                                         <li class="comment_name">${item.reg_user}</li>
                                         <li class="comment_days">${regDate}</li>    
-                                        <ul class="comment_link">                         
-                                            <li value=${item.id} class="bt">수정</li>                
+                                        <ul class="comment_link"> 
+                                            <li value=${item.id} class="bt">수정</li>
                                             <li value=${item.id} class="bt">삭제</li>
-                                            <li value=${item.id} class="bt">답글</li>  
-                                            <input value=${item.id} class='bt update_bt' disabled='disabled'>수정완료</li>
+                                            <li value=${item.id} class='bt update_btn invisible'>수정완료</li>
                                         </ul>
                                     </ul>
                                     <textarea class="comment_detail" readonly>${item.content}</textarea>                                
                                 </div>`
-                    parent.innerHTML = addHtml;                   
-                });
-                commTotalPages = Math.ceil( data.listSize/10) ; //총 페이지 수 : 한 페이지에 10개 댓글 출력        
-                commArticlePage();
+                });    
+                addHtml += `<div>
+                                <form class="comment_user comment_my" id="comm_insert_form" onsubmit="return false">
+                                    <input class="comment_name comment_my_name" name="regUser" type="text" placeholder="작성자명"> 
+                                    <textarea class="comment_days comment_my_detail" name="content" placeholder="댓글 작성하기"></textarea>
+                                    <button type="submit" class="comment_link comment_d" onclick="insertComment(${parentId})">등록</button>
+                                </form>
+                            </div>`
+                parent.innerHTML = addHtml;                   
             }, 
             error : function(err){
                 console.log(err);
             }
-        }); */
+        }); 
     }
 
     const miniAlert = Swal.mixin({
