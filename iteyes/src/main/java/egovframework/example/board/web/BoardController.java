@@ -25,12 +25,21 @@ public class BoardController {
     String goBoard() {
         return "board/boardList";
     }
+    
     // 게시글 단건 페이지 이동
     @RequestMapping("/goBoardOne.do")
     String goBoardOne() {
         return "board/boardOne";
     }
 
+    // 게시글 단건 조회
+    @ResponseBody
+    @RequestMapping("/boardOne.do")
+    public Map<?, ?> boardOne(@RequestParam("id") String id) {
+        System.out.println(id);
+//        model.addAttribute("id", service.boardOne(id));
+        return service.boardOne(id);
+    }
     
     // 전체 게시글 목록
     @RequestMapping("/boardInfoProc.do")
@@ -91,14 +100,7 @@ public class BoardController {
         return vo;
     }
 
-    // 게시글 단건 조회
-    @ResponseBody
-    @RequestMapping("/boardOne.do")
-    public Map<?, ?> boardOne(@RequestParam("id") String id) {
-        System.out.println(id);
-//        model.addAttribute("id", service.boardOne(id));
-        return service.boardOne(id);
-    }
+
     
     // 게시글 등록
     @RequestMapping("/boardInsertProc.do")
