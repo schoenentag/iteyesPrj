@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import egovframework.example.board.service.BoardService;
 import egovframework.example.cmmn.web.DataTableVO;
@@ -105,6 +106,8 @@ public class BoardController {
     // 게시글 등록
     @RequestMapping("/boardInsertProc.do")
     public String boardInsertProc(@RequestParam Map<?,?> map) throws Exception {
+        System.out.println("ejoifjwaeoifjw");
+        System.out.println(map);
         service.boardInsertProc(map);
         return "redirect:goBoard.do";
     }

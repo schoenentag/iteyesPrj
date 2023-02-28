@@ -15,6 +15,8 @@
 </head>
 <body>
     <div class="wrap">
+    
+      <form id='formBody' action="/boardInsertProc.do" method="post" >
         <div class="header_wrap">
             <div class="header">
                 <div class="box_category_name"> 카테고리명 </div>
@@ -34,6 +36,7 @@
             </div>
         </div>
 
+      
         <div class="user_content_wrap">
             <div class="board_detail">내용입니다~~</div>
             <div class="file"> 파일첨부 : 파일첨부는_1개만.txt </div>
@@ -45,6 +48,9 @@
                 
             </div>
         </div>
+      </form>
+
+        
 
         <div class="main_comment">
             <div class="comment_total">총 댓글 0개</div>
@@ -63,9 +69,9 @@
 </body>
 <script>
   
+//   게시글 등록
   if(!localStorage.getItem('boardId')){
-    $('.wrap').wrap(`<form action="/boardInsertProc.do" method="post" enctype="multipart/form-data" id="boardInsertForm">`)
-    $('.box_category_name').replaceWith(`<select name="category">
+    $('.box_category_name').replaceWith(`<select name="id">
         <option value="" style="background-color: lightgrey" selected disabled>카테고리</option>
         <option value="JAU">자유게시판</option>
         <option value="JIL">질문게시판</option>
@@ -81,13 +87,15 @@
     $('.button_1').on('click',()=>{
       location.href="goBoard.do"
     })
-    $('.button_2').replaceWith(`<button type="submit" form="boardInsertForm" class="button_2">등록`)
+    $('.button_2').replaceWith(`<button class="button_2" type="submit" form="formBody">등록`)
+    
   }
   
 
-
+// 게시글 단건 조회
   $.ajax({
     url: "boardOne.do?id="+localStorage.getItem('boardId'),
+    contentType :  'application/json; charset=utf-8',
     success: function(res){
       $('.box_category_name').html(res['category'])
       $('.box_name_text').html(res['title'])
@@ -99,9 +107,57 @@
       $('.button_1').on('click',()=>{
         location.href="goBoard.do"
       })
+      
+      // 게시글 수정
+      $('.button_2').on('click',()=>{
+        $('.box_category_name').replaceWith(`<select name="id">
+            <option value="" style="background-color: lightgrey" disabled>카테고리</option>
+            <option value="JAU">자유게시판</option>
+            <option value="JIL">질문게시판</option>
+            <option value="DEV">개발포럼</option>
+            <option value="DSN">등산포럼</option>
+            <option value="JAN">장터</option>
+          </select>`)
+        
+          switch (res['category']){
+            case '자유게시판':
+              $('select[name="id"]').find('option:contains("자유게시판")').attr("selected",true);
+              break;
+            case '질문게시판':
+              $('select[name="id"]').find('option:contains("질문게시판")').attr("selected",true);
+              break;
+            case '개발포럼':
+              $('select[name="id"]').find('option:contains("개발포럼")').attr("selected",true);
+              break;
+            case '등산포럼':
+              $('select[name="id"]').find('option:contains("등산포럼")').attr("selected",true);
+              break;
+            case '장터':
+              $('select[name="id"]').find('option:contains("장터")').attr("selected",true);
+              break;
+          }
+        
+        $('.box_name_text').replaceWith(`<input name="title" type="text" value=${res['title']} style="width: 100%" required>`)
+//         $('.box_days').html(moment().format('YYYY-MM-DD HH:mm'))
+        $('.user_name_para').replaceWith(`<input name="regUser" type="text" value=${res['regUser']} readonly>`)
+//         $('.cont_para').html('1')
+        $('.board_detail').replaceWith(`<textarea name="content" value=${res['content']} style="width: 100%" rows="9" required>`)
+        $('.button_2').replaceWith(`<button class="button_2" type="submit" form="formBody">수정`)
+          
+          
+          
+          
+          
+        
+      })
     }
   })
-
+  
+  
+  
+  
+  
+  
     let commentInfo = {
         id : 0, 
         boardId : localStorage.getItem('boardId'),

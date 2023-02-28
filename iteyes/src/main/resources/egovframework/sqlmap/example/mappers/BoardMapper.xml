@@ -122,17 +122,21 @@
   insert into BOARD 
   values (
     concat (
-      <if test="id == 'JAN'">'JAN'<include refid="idInsert"></include>'JAN'</if>
       <if test="id == 'JAU'">'JAU'<include refid="idInsert"></include>'JAU'</if>
-      <if test="id == 'DSN'">'DSN'<include refid="idInsert"></include>'DSN'</if>
       <if test="id == 'JIL'">'JIL'<include refid="idInsert"></include>'JIL'</if>
+      <if test="id == 'DSN'">'DSN'<include refid="idInsert"></include>'DSN'</if>
       <if test="id == 'DEV'">'DEV'<include refid="idInsert"></include>'DEV'</if>
-    ),
-    #{category},
+      <if test="id == 'JAN'">'JAN'<include refid="idInsert"></include>'JAN'</if>
+    )),
+      <if test="id == 'JAU'">'자유게시판',</if>
+      <if test="id == 'JIL'">'질문게시판',</if>
+      <if test="id == 'DSN'">'등산포럼',</if>
+      <if test="id == 'DEV'">'개발포럼',</if>
+      <if test="id == 'JAN'">'장터',</if>
     'n',
     #{title},
     #{regUser},
-    #{title},
+    #{content},
     '123123',
     DEFAULT,
     1,

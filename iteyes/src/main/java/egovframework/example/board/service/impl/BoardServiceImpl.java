@@ -52,6 +52,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     public void boardInsertProc(Map<?, ?> map) throws Exception {
+        mapper.boardInsertProc(map);
     }
 
 
