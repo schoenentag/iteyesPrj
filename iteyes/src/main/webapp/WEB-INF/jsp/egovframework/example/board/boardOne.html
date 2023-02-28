@@ -140,7 +140,7 @@
                                         <ul class="comment_link">                         
                                             <li value=${item.id} class="bt">수정</li>                
                                             <li value=${item.id} class="bt">삭제</li>
-                                            <li value=${item.id} class="bt">답글</li>  
+                                            <li value=${item.id} class="bt" id="recomment_btn${item.id}">답글</li>  
                                             <li value=${item.id} class='bt update_btn invisible'>수정완료</li>
                                         </ul>
                                     </ul>
@@ -186,7 +186,7 @@
         if (btnName.innerHTML == '수정' & btnName.classList.contains('bt')) updateState(e);
         else if (btnName.innerHTML == '삭제' & btnName.classList.contains('bt')) deleteComment(e);
         else if (btnName.innerHTML == '답글' & btnName.classList.contains('bt')) {
-            if(!btnName.classList.contains('reply_on')) replyComment(e);    //대댓글 오픈
+            if(!btnName.classList.contains('reply_on')) replyComment(btnName.value);    //대댓글 오픈
             else {
                 btnName.classList.remove('reply_on');  //대댓글 접기
                 document.getElementById(`recomment_list${e.target.value}`).innerHTML='';
@@ -233,8 +233,11 @@
 	            contentType :  'application/json; charset=utf-8',
 	            datatype: "json",
 	            success : function(data) {
-	                getCommPage(commentInfo.boardId,0); //목록 재로딩
-	                content.value='';   //내용 삭제
+	            	//목록 재로딩
+	                if(parentId==0) getCommPage(commentInfo.boardId,0); 
+	                else replyComment(parentId);
+	                //입력창 내용 삭제
+	                content.value='';
 	                miniAlert.fire({icon : 'success', title : '댓글이 등록되었습니다.'})
 	            }
 	        })
@@ -300,10 +303,9 @@
         })
     }
 
-    function replyComment(e){
-    	e.target.classList += ' reply_on';   //대댓글 리스트 오픈 표시
-        let parentId = e.target.value;
-        let parent = document.getElementById(`recomment_list${parentId}`);
+    function replyComment(parentId){
+   	 	let parent = document.getElementById(`recomment_list${parentId}`);
+        document.getElementById(`recomment_btn${parentId}`).classList += ' reply_on';   //대댓글 리스트 오픈 표시
         console.log(parentId)
         $.ajax({
             type: 'get',
