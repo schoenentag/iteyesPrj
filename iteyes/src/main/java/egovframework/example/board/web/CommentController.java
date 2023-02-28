@@ -40,13 +40,9 @@ public class CommentController {
 	
 	//삭제
 	@PostMapping("/delete.do")
-	public int deleteComment(@RequestBody Map<?,?> commentInfo) throws Exception{
+	public int deleteComment(@RequestBody CommentVO commentInfo) throws Exception{
 		System.out.println("Delete Controller");
-		int targetId = Integer.parseInt( (String) commentInfo.get("id")) ;
-		System.out.println("삭제할 댓글 ID : "+ targetId);
-		CommentVO vo = new CommentVO();
-		vo.setId(targetId);
-		return service.deleteComment(vo);
+		return service.deleteComment(commentInfo);
 	}
 	
 	//조회
