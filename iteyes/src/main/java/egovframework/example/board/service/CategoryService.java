@@ -7,7 +7,7 @@ public interface CategoryService {
 	/* 전체 조회 */
 	List<Map<String, String>> jsonCategoryList(Map<String, Object> param) throws Exception; 
     /* 단건 조회 */
-	Map<String, String> jsonCategoryDetail(Map<String,String> map) throws Exception;
+	CategoryVO jsonCategoryDetail(String id) throws Exception;
 	/* 등록 */
 	int jsonCategoryInsert(Map<String, String>map) throws Exception;
 	/* 수정 */

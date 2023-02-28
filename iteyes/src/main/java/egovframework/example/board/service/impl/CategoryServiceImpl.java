@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 
 import egovframework.example.board.service.CategoryService;
+import egovframework.example.board.service.CategoryVO;
 import egovframework.example.board.service.Pagination;
 @Service("categoryService")
 //@Resource(name="categoryMapper")
@@ -25,8 +26,8 @@ public class CategoryServiceImpl implements CategoryService {
 
 	/* 단건 조회 */
 	@Override
-	public Map<String, String> jsonCategoryDetail(Map<String, String> map) throws Exception {
-		return cMap.jsonCategoryDetail(map);
+	public CategoryVO jsonCategoryDetail(String id)  throws Exception {
+		return cMap.jsonCategoryDetail(id);
 	}
 	
 	/* 등록 */

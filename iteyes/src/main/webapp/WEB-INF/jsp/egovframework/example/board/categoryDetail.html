@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.3.min.js"
+	integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
+	crossorigin="anonymous"></script>
+<link rel="stylesheet" href="/css/board/sub.css">
+<title>카테고리게시판 상세조회</title>
+</head>
+<body>
+<div class="board_sub_wrap">
+        <div class="board_title">
+            <strong>게시판 정보</strong>
+        </div>
+
+        <table id="tbl" name="tbl">
+            <tr>
+                <th class="board_sub_bg">게시판명</th>
+                <td id="name" name="name"></td>        
+            </tr>
+            <tr>
+                <th class="board_sub_bg">게시판 설명</th>
+                <td id="description" name="description"></td>       
+            </tr>
+            <tr>
+                <th class="board_sub_bg">사용여부</th>
+                <td id="useYn" name="useYn"></td>      
+            </tr>
+            <tr>
+                <th class="board_sub_bg">등록자</th>
+                <td id="regUser" name="regUser"></td>       
+            </tr>
+           
+        </table>
+
+        <div>
+            <button>수정</button>
+            <button>목록</button>
+        </div>
+
+    </div>
+<script type="text/javascript">
+
+   const url = new URL(window.location.href); //현재 URL
+   const urlParams = url.searchParams; //파라미터 값 읽기
+   let id = urlParams.get('id'); //id 값만 가져오기
+   
+   console.log("url : ",url);
+   console.log("urlParams : ", urlParams);
+   
+   let data = {"id" : id};
+   console.log("id : ", id );
+   console.log("data : ", data);
+   let td_html = "";
+   
+    $.ajax({
+        url: '/categoryDetailList.do?id='+id,
+        type: 'get',
+		datatype: "JSON",
+		success: function(res) {
+			console.log("통신은 됨...")
+			console.log(res);
+         },
+	    fail: function(result) {
+		     fail(error); 
+		}                                             
+	});// 두번째 ajax 끝
+</script>    
+</body>
+</html>

@@ -6,11 +6,14 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import egovframework.example.board.service.CategoryService;
+import egovframework.example.board.service.CategoryVO;
 import egovframework.example.board.service.Pagination;
 
 @Controller
@@ -65,8 +68,9 @@ public class CategoryController {
 	
 	/* 등록 페이지 이동 */
 	@RequestMapping("/categoryInsertForm.do")
-	public String categoryDetailPage() {
-		return "board/categoryInsert";
+	public String categoryInsertForm() {
+		System.out.println("categoryInsertForm controller");
+		return "board/categoryInsertForm";
 	}
 	/* 삭제 */
 	@RequestMapping("/categoryDelete.do")
@@ -75,11 +79,20 @@ public class CategoryController {
 	}
 	
 	
+	/* 단건 조회 페이지*/
+	@RequestMapping("/categoryDetail.do")
+	public String categoryDetail() throws Exception{
+		return "board/categoryDetail";
+	}
 	/* 단건 조회 */
 	@ResponseBody
-	@RequestMapping("/jsonCategoryDetail.do")
-	public Map<String,String>jsonCategoryDetail(Map<String,String> map) throws Exception{
-		return categoriService.jsonCategoryDetail(map);
+	@GetMapping("/categoryDetailList.do")
+	public CategoryVO categoryDetailList(@RequestParam String id) throws Exception{
+		System.out.println(id);
+		CategoryVO test = categoriService.jsonCategoryDetail(id);
+		System.out.println("@#$@#$@#$@#$@#%%@#$%#$%#$test"+test);
+		return null;
+		
 	}
 	
 
