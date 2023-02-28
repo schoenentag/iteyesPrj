@@ -5,6 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/css.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
     <title>Document</title>
 </head>
 <body>
@@ -41,39 +45,244 @@
         </div>
 
         <div class="main_comment">
-            <div class="comment_total">댓글 1개</div>
-            <ul class="comment_user">
-                <li class="comment_name">김익명</li>
-                <li class="comment_days">yy/mm/dd 00:00</li>
-                <li>
-                    <ul class="comment_link">
-                        <li><a href="#">수정</a></li>
-                        <li><a href="#">삭제</a></li>
-                        <li><a href="#">답글</a></li>
-                    </ul>    
-                </li>
-            </ul>
-
-            <div class="comment_detail"> 댓글 내용입니다. </div>
-
-            <ul class="comment_user comment_my">
-                <li class="comment_name comment_my_name">최익명</li>
-                <li class="comment_days comment_my_detail">댓글 다는 곳입니다.</li>
-                <li>
-                    <ul class="comment_link comment_d">
-                        <li><a href="#">등록</a></li>
-                    
-                    </ul>    
-                </li>
-            </ul>
-            <!-- <ul class="comment_my">
-                <li>최익명</li>
-                <li>댓글 다는 곳입니다.</li>
-                <li><a href="#">등록</a></li>
-            </ul> -->
-
+            <div class="comment_total">총 댓글 0개</div>
+            <div id="comment_list" onclick="controlComment(event)"></div>
+            <div class="comment_page" onclick="controlComment(event)"></div>
         </div>
+        <div>
+            <form class="comment_user comment_my" id="comm_insert_form" onsubmit="return false">
+                <input class="comment_name comment_my_name" name="regUser" type="text" placeholder="작성자명"> 
+                <textarea class="comment_days comment_my_detail" name="content" placeholder="댓글 작성하기"></textarea>
+                <button type="submit" class="comment_link comment_d" onclick="insertComment(0)">등록</button>
+            </form>
+        </div>  
 
     </div>    
 </body>
+<script>
+    let commentInfo = {
+        id : 0, 
+        //boardId : localStorage.getItem('boardId'),
+        boardId : 1,
+        parentId : 0,
+        content : ''
+    }
+    let commCurrentPage = 1;    //현제 페이지
+    let commTotalPages = 0;     //총 페이지 수
+    let commStartPage = 0;      //현재 블럭의 시작 페이지
+    let commEndPage = 0;        //현재 블럭의 마지막 페이지
+    let commPagingCount = 5;    //블럭 당 페이지 수
+
+    document.addEventListener('DOMContentLoaded',function(){
+        getCommPage(commentInfo.boardId,0)   //댓글리스트 호출
+    })
+   
+    //댓글 리스트 
+    function getCommPage(boardId,parentId){
+        let parent = document.querySelector('#comment_list');
+        parent.textContent = '';    //기존 리스트 삭제
+        $.ajax({
+            type: 'get',
+            url : `http:/comment/getList.do?boardId=${boardId}&parentId=0&pageNum=${commCurrentPage}`,
+            datatype: "json",
+            success : function(data) {
+                console.log('ajax 통신 성공');
+                console.log(data);
+                document.querySelector('.comment_total').innerHTML = `총 댓글 ${data.listSize}개`;
+                let addHtml = '';
+                data.list.forEach(item => {
+                    let regDate =  moment(item.dt).format('YYYY/MM/DD HH:mm:ss');
+                    addHtml += `<div>
+                    <ul class="comment_user">
+                                    <li class="comment_name">${item.reg_user}</li>
+                                    <li class="comment_days">${regDate}</li>    
+                                    <ul class="comment_link">                         
+                                        <li value=${item.id} class="bt">수정</li>                
+                                        <li value=${item.id} class="bt">삭제</li>
+                                        <li value=${item.id} class="bt">답글</li>  
+                                    </ul>
+                                </ul>
+                                <textarea class="comment_detail" readonly>${item.content}</textarea>
+                                </div>`
+                    parent.innerHTML = addHtml;                   
+                });
+                commTotalPages = Math.ceil( data.listSize/10) ; //총 페이지 수 : 한 페이지에 10개 댓글 출력        
+                commArticlePage();
+            }, 
+            error : function(err){
+                console.log(err);
+            }
+        });
+    } 
+    
+    function commArticlePage(){
+        let commentPage = document.querySelector('.comment_page');
+        commentPage.textContent = '';
+        commStartPage = Math.ceil(commCurrentPage / commPagingCount) ;
+        commEndPage = commStartPage + commTotalPages -1;
+        if(commEndPage > commTotalPages) {
+            endPage = commTotalPages;
+        }
+        console.log(`총 페이지 ${commTotalPages} 시작페이지 ${commStartPage}, 마지막페이지 ${commEndPage}`)
+        let addHtml=`<div href="" class="bt first"><<</div>
+                   <div href="" class="bt prev"><</div>`;
+        for(let i=commStartPage; i<=commEndPage ; i++){
+            addHtml += `<div class="comm_page_num`;
+            if(i==commCurrentPage) addHtml+=' on';
+            addHtml += `">${i}</div>`;
+        }
+        addHtml+=`<div href="" class="bt next">></div>
+                <div href="" class="bt last">>></div>`;
+        commentPage.innerHTML = addHtml;
+    }
+
+    //동적으로 생성된 태그의 클릭 이벤트
+    function controlComment(e){
+        let btnName = e.target;
+        console.log(`클릭 ${btnName.innerHTML}`);
+        if (btnName.innerHTML == '수정' & btnName.classList.contains('bt')) updateComment(e);
+        else if (btnName.innerHTML == '삭제' & btnName.classList.contains('bt')) deleteComment(e);
+        else if (btnName.innerHTML == '답글' & btnName.classList.contains('bt')) replayComment(e);
+        else if (btnName.classList.contains('bt') & btnName.classList.contains('first')) {
+            commCurrentPage = commStartPage;
+            getCommPage(commentInfo.boardId,0);
+        }
+        else if (btnName.classList.contains('bt') & btnName.classList.contains('prev')) {
+            commCurrentPage--;
+            getCommPage(commentInfo.boardId,0);
+        }
+        else if (btnName.classList.contains('bt') & btnName.classList.contains('next')) {
+            commCurrentPage++;
+            getCommPage(commentInfo.boardId,0);
+        }
+        else if (btnName.classList.contains('bt') & btnName.classList.contains('last')) {
+            commCurrentPage = commEndPage;
+            getCommPage(commentInfo.boardId,0);
+        }
+        else if ( btnName.classList.contains('comm_page_num')) {
+            commCurrentPage = btnName.innerHTML;
+            getCommPage(commentInfo.boardId,0);
+        }
+    }
+
+    function insertComment(parentId){
+        let form = document.getElementById('comm_insert_form');
+        let id = document.getElementsByName('regUser')[0];
+        let content = document.getElementsByName('content')[0];
+        if(id.value == '' || content.value == ''){
+            miniAlert.fire({icon : 'error',
+                            title : '작성자명과 내용을 입력하세요' })
+        }else{
+            let data = new FormData(form);
+            console.log(data)
+            data.append("parentId",parentId);
+            data.append("boardId", commentInfo.boardId);            
+            $.ajax({
+            type: 'post',
+            url : `http:/comment/insert.do`,
+            data : JSON.stringify(data),
+            contentType :  'application/json; charset=utf-8',
+            datatype: "json",
+            success : function(data) {
+                console.log('ajax 통신 성공');
+                console.log(data);
+            }
+        })
+        }
+    }
+
+    function updateComment(e){
+        let id = e.target.parentNode.value;
+        let content =  e.target.parentNode.parentNode.parentNode.lastChild.previousSibling;
+        content.readOnly = false;
+        content.focus();
+        $.ajax({
+            type: 'post',
+            url : `http:/comment/update.do`,
+            data : JSON.stringify(updateInfo),
+            contentType :  'application/json; charset=utf-8',
+            datatype: "json",
+            success : function(data) {
+                console.log('ajax 통신 성공');
+                console.log(data);
+            }
+        })
+    }
+    function deleteComment(e){
+        let id = e.target.value;
+        let content = e.target.parentNode.parentNode.parentNode.lastChild.previousSibling.innerHTML;
+        console.log(content)
+        Swal.fire({
+            title: '댓글을 삭제하시겠습니까?',
+            text: content,
+            icon: 'warning',
+            showCancelButton: true,         // cancel버튼 보이기
+            confirmButtonText: '삭제하기',  // confirm 버튼 텍스트
+            cancelButtonText: '취소',       // cancel 버튼 텍스트
+        }).then(result => {
+            if (result.isConfirmed) {       //confirm
+                commentInfo.id = id;
+                console.log(commentInfo.id)
+                $.ajax({
+                    type: 'post',
+                    url : `http:/comment/delete.do`,
+                    data : JSON.stringify(commentInfo),
+                    contentType :  'application/json; charset=utf-8',
+                    datatype: "json",
+                    success : function(data) {
+                        miniAlert.fire({
+                            icon : 'success',
+                            title : '삭제되었습니다.'
+                        })
+                    }
+                })
+            }
+        })
+    }
+
+    function replayComment(e){
+        let parent = e.target.parent;
+        $.ajax({
+            type: 'get',
+            url : `http:/comment/getList.do?boardId=${commentInfo.boardId}&parentId=${e.target.value}`,
+            datatype: "json",
+            success : function(data) {
+                console.log('ajax 통신 성공');
+                console.log(data);
+                document.querySelector('.comment_total').innerHTML = `총 댓글 ${data.listSize}개`;
+                let addHtml = '';
+                data.list.forEach(item => {
+                    let regDate =  moment(item.dt).format('YYYY/MM/DD HH:mm:ss');
+                    addHtml += `<div>
+                    <ul class="comment_user">
+                                    <li class="comment_name">${item.reg_user}</li>
+                                    <li class="comment_days">${regDate}</li>    
+                                    <ul class="comment_link">                         
+                                        <li value=${item.id} class="bt">수정</li>                
+                                        <li value=${item.id} class="bt">삭제</li>
+                                        <li value=${item.id} class="bt">답글</li>  
+                                    </ul>
+                                </ul>
+                                <textarea class="comment_detail" readonly>${item.content}</textarea>
+                                </div>`
+                    parent.innerHTML = addHtml;                   
+                });
+            }, 
+            error : function(err){
+                console.log(err);
+            }
+        });
+    }
+
+    const miniAlert = Swal.mixin({
+        toast: true,
+        showConfirmButton: false,
+        timer: 1200,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    })
+</script>
 </html>
