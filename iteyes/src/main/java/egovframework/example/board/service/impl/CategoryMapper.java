@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.egovframe.rte.psl.dataaccess.mapper.Mapper;
 
+import egovframework.example.board.service.CategoryVO;
+
 /**
  * @Class Name : CategoryMapper.java
  * @Description : CategoryMapper Class
@@ -24,9 +26,11 @@ public interface CategoryMapper {
 	/* 전체 조회 */
 	List<Map<String, String>> jsonCategoryList(Map<String, Object> param) throws Exception; 
     /* 단건 조회 */
-	Map<String, String> jsonCategoryDetail(Map<String,String> map) throws Exception;
+	Map<String, String> jsonCategoryDetail(String id) throws Exception;
 	/* 등록 */
 	int jsonCategoryInsert(Map<String, String>map) throws Exception;
+	/* 등록2 */
+	int jsonCategoryInsert2(CategoryVO vo) throws Exception;
 	/* 수정 */
 	int jsonCategoryUpdate(Map<String, String> map) throws Exception;
 	/* 삭제 */

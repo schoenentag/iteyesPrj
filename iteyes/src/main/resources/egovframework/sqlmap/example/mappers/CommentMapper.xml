@@ -40,7 +40,7 @@
 		WHERE 	board_id = #{boardId}
 				AND parent_id = #{parentId}
 		ORDER BY dt desc
-		<if test="start!=null">
+		<if test='start != -1'>
 			LIMIT #{start}, #{length} 
 		</if>
 	</select>

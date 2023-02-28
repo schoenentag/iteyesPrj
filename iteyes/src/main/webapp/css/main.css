@@ -216,3 +216,25 @@
     color: #fff;
 
 }
+
+.comment_link > .update_bt{
+    float: right   ;
+    color: rgb(207, 7, 7)
+}
+.comment_link > .update_bt:hover{
+    background-color: rgb(83, 27, 94)  ;
+    border-radius: 3px;
+    color: white;
+}
+
+.recomment_list{
+    padding-left: 50px;
+}
+
+.bt:hover {
+    cursor: pointer;
+    box-shadow: 1px 1px 20px #ddd;
+}
+.invisible{
+    display: none;
+}

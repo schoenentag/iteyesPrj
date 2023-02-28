@@ -40,13 +40,9 @@ public class CommentController {
 	
 	//삭제
 	@PostMapping("/delete.do")
-	public int deleteComment(@RequestBody Map<?,?> commentInfo) throws Exception{
+	public int deleteComment(@RequestBody CommentVO commentInfo) throws Exception{
 		System.out.println("Delete Controller");
-		int targetId = Integer.parseInt( (String) commentInfo.get("id")) ;
-		System.out.println("삭제할 댓글 ID : "+ targetId);
-		CommentVO vo = new CommentVO();
-		vo.setId(targetId);
-		return service.deleteComment(vo);
+		return service.deleteComment(commentInfo);
 	}
 	
 	//조회
@@ -54,13 +50,18 @@ public class CommentController {
 	@GetMapping("/getList.do")
 	public Map<String, Object> getComment(@RequestParam String boardId,
 									@RequestParam int parentId,
-									@RequestParam(required = false) int pageNum) throws Exception {
+									@RequestParam int pageNum) throws Exception {
 		System.out.println("Select Comment Controller");
 		Map<String, Object> info = new HashMap<String, Object>();
 		info.put("boardId", boardId);		//게시판 ID
 		info.put("parentId", parentId);		//상위 댓글 번호
-		info.put("start", (pageNum-1)*10);	//시작 위치
-		info.put("length", 10);				//한 페이지 출력 개수 10개
+		if(pageNum==-1) {
+			info.put("start", -1);
+			info.put("length", -1);	
+		}else {
+			info.put("start", (pageNum-1)*10);	//시작 위치
+			info.put("length", 10);				//한 페이지 출력 개수 10개
+		}
 		List<CommentVO> list = service.getComment(info);
 		
 		Map<String, Object> map = new HashMap<String, Object>();

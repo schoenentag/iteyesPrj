@@ -23,14 +23,19 @@
     <!-- 등록 -->
     <insert id="jsonCategoryInsert" parameterType="egovframework.example.board.service.impl.CustomMap">
         INSERT INTO SAMPLE (ID, NAME, DESCRIPTION, USE_YN, REG_USER)
-        VALUES (#{id}, #{name}, #{description}, #{userYn}, #{regUser})
+        VALUES (NEXTVAL(id_seq), #{name}, #{description}, #{usern}, #{regUser})
+    </insert>
+    <!-- 등록2 -->
+    <insert id="jsonCategoryInsert2" parameterType="egovframework.example.board.service.CategoryVO">
+        INSERT INTO SAMPLE (ID, NAME, DESCRIPTION, USE_YN, REG_USER)
+        VALUES (NEXTVAL(id_seq), #{name}, #{description}, #{useYn}, #{regUser})
     </insert>
     
     <!-- 수정 -->
     <update id="jsonCategoryUpdate" parameterType="egovframework.example.board.service.impl.CustomMap">
         UPDATE SAMPLE  
             SET NAME = #{name}, DESCRIPTION = #{description}, 
-                USE_YN = #{userYn}
+                USE_YN = #{useYn}
     </update>
     
     <!-- 삭제 -->

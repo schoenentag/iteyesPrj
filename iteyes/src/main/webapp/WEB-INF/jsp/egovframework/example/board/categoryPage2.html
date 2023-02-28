@@ -9,6 +9,7 @@
 <title>게시판 카테고리</title>
 <link rel="stylesheet" href="/css/board/boardStyle.css">
 </head>
+</script>
 <div class="board_wrap">
         <div class="board_title">
             <strong>게시판 카테고리</strong>
@@ -63,16 +64,12 @@
     </div>
 
 <script type="text/javascript">
-$(document).ready(function(){
-	ajaxCategoryCall();
- });
 
-/*목록 출력하는 ajax와 페이징처리 되는 ajax를 순서대로 호출한다.*/
-function ajaxCategoryCall(){
 	 let option; //검색할 옵션 값을 담을 변수; N(이름), D(설명), U(관리자명)
 	 let keyword;
- 	 let list = {"option" : option, "keyword" : keyword}
+ 	 let list = {"option" : option, "keyword" : keyword};
  	 
+ 	/*목록 출력하는 ajax와 페이징처리 되는 ajax를 순서대로 호출한다.*/
  	 new Promise( (succ, fail)=>{ 
  	 
  		//첫번째 ajax로 list 출력
@@ -89,7 +86,7 @@ function ajaxCategoryCall(){
 					  for (list of data){
 					      td_html += `<input type="checkbox" class="cbox" name="cbox">
 		                    <div class="num">${list.id}</div>
-		                    <div class="title"><a href="#">${list.name}</a></div>
+		                    <div class="title" data-value="${list.id}">${list.name}</div>
 		                    <div class="writer">${list.description}</div>
 		                    <div class="yn">${list.useYn}</div>
 		                    <div class="name">${list.regUser}</div>
@@ -97,7 +94,6 @@ function ajaxCategoryCall(){
 					  }
 					  
 		              $(contentArea).append(td_html);
-					  
 				  }, 
 				  error : function(err){
 				    console.log(err);
@@ -107,7 +103,7 @@ function ajaxCategoryCall(){
 			   // let data = {"curPage" : pageNum}; 
 			
 			    $.ajax({
-			        url: '/pagination.do?',
+			        url: '/pagination.do',
 			        type: 'post',
 			        //data : JSON.stringify(data),
 					datatype: "JSON",
@@ -115,30 +111,22 @@ function ajaxCategoryCall(){
 			            console.log("두번째 ajax : ", res); // 성공하면
 			            
 			            if(res.curRange != 1){//맨처음
-				            board_html+= `<a href="" class="bt first" onClick="fn_paging(1)" value="1"><<</a> 
-				                           <a href="" class="bt prev" onClick="fn_paging('${res.prevPage}')" value="${res.prevPage}"><</a>`;
+				            board_html+= `<a href="#" class="bt first" onClick="fn_paging(1)" value="1"><<</a> 
+				                           <a href="#" class="bt prev" onClick="fn_paging('${res.prevPage}')" value="${res.prevPage}"><</a>`;
 			            } 
 			                		  
 			            for (let i = res.startPage; i <= res.endPage; i++){
-				                              console.log(i)
 			            	if( i == res.curPage){
-			            		board_html+= `<a href="" class="num on" id="pageNum" name="pageNum"
-		                              value="${i}">${i}</a> `;
+			            		board_html+= `<a href="#" class="num on" id="pageNum" name="pageNum" value="${i}">${i}</a> `;
 			            	}else{
-				                board_html+= `<a href="" class="num" id="pageNum" name="pageNum"
-				                	value="${i}">${i}</a> `;
+				                board_html+= `<a href="#" class="num" id="pageNum" name="pageNum" value="${i}">${i}</a> `;
 			            	}
 			            }
-			            
 			            if( res.curPage != res.pageCnt & res.pageCnt > 0 ){
 			                board_html+=`<a href="" class="bt next" onClick="fn_paging('${res.nextPage }')" value="${res.nextPage }">></a>
 			                             <a href="" class="bt last" onClick="fn_paging('${res.pageCnt  }')" value="${res.pageCnt }">>></a>`;
 			            }
 			            $(".board_page").append(board_html);
-			            
-			          
-			            			 
-			            
 			        },
 			        fail: function(result) {
 			            fail(error); 
@@ -149,13 +137,13 @@ function ajaxCategoryCall(){
 			});
 	    });
 
-	}//ajaxCategoryCall 끝
 	
-	  $("#paginationArea").on("click",".num",
-			    function(){
-				 console.log("일단 실행됨");
-		});
-
+$("#paginationArea").on("click",".num",
+	function(){
+		console.log("일단 실행됨");
+});
+	
+	
 	
 	// let thiss = $(this);
 	 //console.log(thiss);
@@ -178,21 +166,27 @@ function ajaxCategoryCall(){
 			    });//ajax끝 */
 	
 //=========================	
-/* 삭제 */
 
-function delectCall(){
-	console.log("여러 행 삭제기능 구현중");
-	
-	var checkBoxArr = []; 
-	//현재 반응없음...
-	$("input:checkbox[name='cbox']:checked").each(function() {
-	  consol.log($(this).val());
-		  //checkBoxArr.push($(this).val());     // 체크된 것만 값을 뽑아서 배열에 push
-	  console.log(checkBoxArr);
-	  });
-			    
-}
- 
+	/* 삭제 */
+    function delectCall(){
+		console.log("여러 행 삭제기능 구현중");
+		
+		var checkBoxArr = []; 
+		//현재 반응없음...
+		$("input:checkbox[name='cbox']:checked").each(function() {
+		  consol.log($(this).val());
+			  //checkBoxArr.push($(this).val());     // 체크된 것만 값을 뽑아서 배열에 push
+		  console.log(checkBoxArr);
+		  });
+    }
+
+  /* 단건 조회 페이지 이동 */
+  $("#contentArea").on("click",".title",function(e){
+	  e.stopPropagation(); // 버블링 차단
+	  let tg = e.currentTarget;
+	  let prev = $(tg).prev().html(); //id값
+	  location.href = '/categoryDetail.do?id='+prev; //페이지 이동
+  })
 </script>
 </body>
 </html>
