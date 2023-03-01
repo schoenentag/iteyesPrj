@@ -124,22 +124,13 @@ public class CategoryController {
 		int n = 0;
 		//@RequestParam(value="checkBoxArr[]") String[] id 인식불가
 		
+	    //id 값만 담기
 		List<String> ids = new ArrayList<>();
-		/*
-		 *  List Map으로 받아온 id의 값을 List에 한번 더 담는다.
-		 *  중복 제거를 위함.... (개선 필요)
-		 */
 		for (int i = 0; i < map.size(); i++){	
-		    System.out.println(map.get(i).get("id"));
 		    ids.add(map.get(i).get("id"));
 		}
 		
-		/* 중복 제거된 새로운 list에 값을 담는다. */
-		 List<String> newList = ids.stream().distinct().collect(Collectors.toList());
-	     System.out.println(newList); //중복제거확인 test
-		
-	     /* 중복 제거된 id 값을 delete 처리함. 처리 완료 1*/
-	     for(String id : newList ) {
+	     for(String id : ids ) {
 			 n = categoryService.jsonCategoryDelete(id);
 		}
 			
