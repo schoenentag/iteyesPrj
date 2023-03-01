@@ -6,10 +6,10 @@
 <script src="https://code.jquery.com/jquery-3.6.3.min.js"
 	integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
 	crossorigin="anonymous"></script>
+</script>
 <title>게시판 카테고리</title>
 <link rel="stylesheet" href="/css/board/boardStyle.css">
 </head>
-</script>
 <div class="board_wrap">
         <div class="board_title">
             <strong>게시판 카테고리</strong>
@@ -18,21 +18,18 @@
 
         <div class="board_content">
             <ul>
-                <select name="category">
-                    <option value="category_name">카테고리명</option>
-                    <option value="category_name">1카테고리</option>
-                    <option value="category_name">2카테고리</option>
-                    <option value="category_name">3카테고리</option>
+                <select id="key" name="key">
+                    <option value="">= 선택 =</option>
+                    <option value="1">게시판명</option>
+                    <option value="2">설명</option>
+                    <option value="3">등록자</option>
                 </select>
                 <div class="search">
-                    <input type="text" placeholder="검색어를 입력해주세요.">
-                    
-                    <button>검색</button>
-                   
+                    <input type="text" id="val" name="val" placeholder="검색어를 입력해주세요.">
+                    <button onclick="searchCall()" >검색</button>
                </div>
                 <li><a href="#" onclick="deleteCall()">삭제</a></li>
                 <li><a href="/categoryInsertForm.do">등록</a></li>
-                <li><a href="#">전체글보기</a></li>
             </ul>
         </div>
 
@@ -53,11 +50,6 @@
             </div>
             <div class="board_page" id="paginationArea" name="paginationArea">
             </div>
-
-            <!-- <div class="bt_wrap">
-                <a href="#" class="on"> 등록 </a>
-               <a href="#"> 수정 </a>  
-            </div> -->
             
         </div>
 
@@ -65,39 +57,44 @@
 
 <script type="text/javascript">
 
-	 let option; //검색할 옵션 값을 담을 변수; N(이름), D(설명), U(관리자명)
-	 let keyword;
- 	 let list = {"option" : option, "keyword" : keyword};
+/*변수 선언*/
+let key; //검색할 옵션 값을 담을 변수; N(이름), D(설명), U(관리자명)
+let value; // 검색 값
+let searchKey = {"key" : key, "value" : value};
+
+    var isAjaxing = false; // 중복제거를 위한 변수
+ 	var td_html="";
  	 
  	/*목록 출력하는 ajax와 페이징처리 되는 ajax를 순서대로 호출한다.*/
  	 new Promise( (succ, fail)=>{ 
  	 
- 		//첫번째 ajax로 list 출력
+ 		/* 1. ajax로 카테고리 목록 출력 */
 	 	$.ajax({
 	 		  type: 'post',
 	 		  contentType: 'application/json; charset=utf-8',
-				  url : '/jsonCategoryList.do',
-				  data : JSON.stringify(list),
-				  datatype: "JSON",
-				  success : function(data) {
-					  let td_html = "";
-					  
-					  for (list of data){
-					      td_html += ` <input type="checkbox" class="cbox" name="cbox" data-id="${list.id}">
-		                    <div class="num" data-id="${list.id}">${list.id}</div>
+			  url : '/jsonCategoryList.do',
+			  data : JSON.stringify(searchKey),
+			  datatype: "JSON",
+			  success : function(data) {
+				  //$("#contentArea").empty();
+				 setTimeout(function(){ isAjaxing = false;}, 10000) //중복방지를 위한 타임아웃설정	  
+				 for (list of data){
+					 td_html += ` <input type="checkbox" class="cbox" name="cbox" data-id="${list.id}">
+		                    <div class="num" data-id="${list.id}" >${list.id}</div>
 		                    <div class="title" data-value="${list.id}" data-id="${list.id}">${list.name}</div>
 		                    <div class="writer" data-id="${list.id}">${list.description}</div>
 		                    <div class="yn" data-id="${list.id}">${list.useYn}</div>
 		                    <div class="name" data-id="${list.id}">${list.regUser}</div>
 		                    <div class="run" data-id="${list.id}">></div>`;
-					  }
+			      }
 					  
-		              $(contentArea).append(td_html);
-				  }, 
-				  error : function(err){
+		          $(contentArea).append(td_html);
+			   }, 
+			   error : function(err){
 				    console.log(err);
 				}
-			}).then((arg) =>{    // 두번째 ajax를 실행한다(페이징 처리)
+			   
+		}).then((arg) =>{    /* 2. pagination ajax를 실행 */
 				let board_html = "";
 			   // let data = {"curPage" : pageNum}; 
 			
@@ -108,71 +105,188 @@
 					datatype: "JSON",
 			        success: function(res) {
 			            
-			            if(res.curRange != 1){//맨처음
-				            board_html+= `<a href="#" class="bt first" onClick="fn_paging(1)" value="1"><<</a> 
-				                           <a href="#" class="bt prev" onClick="fn_paging('${res.prevPage}')" value="${res.prevPage}"><</a>`;
+			        	/* 현재 페이지가 1이 아니라면 
+			        	    <<(1 page) , <(이전페이지 prevPage = curPage -1) 출력 */
+			            if(res.curRange != 1){
+				            board_html+= `<a href="#" class="bt first" onClick="fn_paging(1)" data-value="1"><<</a> 
+				                           <a href="#" class="bt prev" onClick="fn_paging('${res.prevPage}')" data-value="${res.prevPage}"><</a>`;
 			            } 
-			                		  
+			            /* 페이지 번호 생성 (클릭된 번호는 배경색표시) */    		  
 			            for (let i = res.startPage; i <= res.endPage; i++){
+			            	//console.log(" '/pagination.do' res.curPage : "+ res.curPage);
 			            	if( i == res.curPage){
-			            		board_html+= `<a href="#" class="num on" id="pageNum" name="pageNum" value="${i}">${i}</a> `;
+			            		board_html+= `<a href="#" class="num on" id="pageNum" name="pageNum" data-value="${i}">${i}</a> `;
 			            	}else{
-				                board_html+= `<a href="#" class="num" id="pageNum" name="pageNum" value="${i}">${i}</a> `;
+				                board_html+= `<a href="#" class="num" id="pageNum" name="pageNum" data-value="${i}">${i}</a> `;
 			            	}
 			            }
+			            /* 현재 페이지가 총 페이지 수(pageCnt) 값이 아니면서 총 페이지 수가 0 보다 클때 
+			                > (다음 페이지 curPage +), >> (마지막페이지) 출력 */
 			            if( res.curPage != res.pageCnt & res.pageCnt > 0 ){
-			                board_html+=`<a href="" class="bt next" onClick="fn_paging('${res.nextPage }')" value="${res.nextPage }">></a>
-			                             <a href="" class="bt last" onClick="fn_paging('${res.pageCnt  }')" value="${res.pageCnt }">>></a>`;
+			                board_html+=`<a href="#" class="bt next" onClick="fn_paging('${res.nextPage }')" data-value="${res.nextPage }">></a>
+			                             <a href="#" class="bt last" onClick="fn_paging('${res.pageCnt  }')" data-value="${res.pageCnt }">>></a>`;
 			            }
 			            $(".board_page").append(board_html);
 			        },
 			        fail: function(result) {
 			            fail(error); 
 			        }                                             
-			
-			    });// 두번째 ajax 끝
-			
-			});
-	    });
+			    }); // pagination ajax end
+			}); //then end
+	    }); //promise end
 
-	
+/* pagination 영역에서 숫자를 클릭하면 발생하는 이벤트(페이지 이동) */
+/* 1. 클릭이벤트 */
+
+let curpage ; // 현재 페이지 변수
+let tg;
 $("#paginationArea").on("click",".num", function(e){
-    console.log("일단 실행됨");
+    console.log("페이지 클릭");
 	e.stopPropagation(); // 버블링 차단
+	tg = e.currentTarget; //target
+	curPage = $(tg).data('value'); //
+	
+	fn_paging(curPage) //ajax 함수 호출
+	
 });
+
+/* 2. 페이지번호 클릭시 발생하는 함수   */
+function fn_paging(curPage){
+	let page = {"curPage" : curPage}
 	
+	/* 페이징처리 되는 ajax와 목록 출력하는 ajax 다시 재 호출.*/
+ 	 new Promise( (succ, fail)=>{ 
+ 	 
+		  $.ajax({
+			  url: '/paginationMove.do',
+		      type: 'post',
+		      contentType: 'application/json; charset=utf-8',
+		      data : JSON.stringify(page),
+			  datatype: "JSON",
+			  success: function(res) {
+				  let pageArr  = [] // 페이지 번호 담을 배열
+				  for (let i = res.startPage; i <= res.endPage; i++){
+					  if (i != res.curPage)
+					      pageArr.push(i);
+				  }
+					  
+				  //반복문으로 선택된 페이지만 배경색 처리
+				  for (let j = 0; j < res.endPage; j++){
+					  
+				      if(pageArr[j] == $("[name=pageNum]").eq(j).data('value')){
+						  $("[name=pageNum]").eq(j).attr('class','num');
+					  
+					  }else if(res.curPage == $(tg).data('value')){
+						  $(tg).attr('class', 'num on');
+					  }
+				  }
+				  
+			  },fail: function(result) {
+		            fail(error); 
+		        } 
+		   }).then((arg) =>{
+			   $.ajax({
+			 		  type: 'post',
+			 		  contentType: 'application/json; charset=utf-8',
+						  url : '/jsonCategoryList.do',
+						  data : JSON.stringify(page),
+						  datatype: "JSON",
+						  success : function(data) {
+							  //td_html = "";
+							  $("#contentArea").empty();
+							 // $(td_html).remove();
+							 // console.log("$(#contentArea).empty(); : ", $("#contentArea").html());
+							 // $(td_html).remove();
+							  
+							  for (list of data){
+							      td_html += ` <input type="checkbox" class="cbox" name="cbox" data-id="${list.id}">
+				                    <div class="num" data-id="${list.id}">${list.id}</div>
+				                    <div class="title" data-value="${list.id}" data-id="${list.id}">${list.name}</div>
+				                    <div class="writer" data-id="${list.id}">${list.description}</div>
+				                    <div class="yn" data-id="${list.id}">${list.useYn}</div>
+				                    <div class="name" data-id="${list.id}">${list.regUser}</div>
+				                    <div class="run" data-id="${list.id}">></div>`;
+							  }
+				              $(contentArea).append(td_html);
+						  }, 
+						  error : function(err){
+						    console.log(err);
+						}
+					})
+		   }); //then end
+ 	   })//promise end
+ }	
+
+/*********************/
+/*********************/
+/***** 검색 영역 ******/
+/*******************/
+// input창에서 마우스 커서가 빠져나갈때 값을 담는다.
+ $("#val").blur(function(){ 
+	 key = $("#key").val();//검색할 옵션 값을 담을 변수; N(1), D(2), U(3)
+	 value = $("#val").val();
+	 console.log("key: ", key, "value: ", value)
+ })
+ 
+function searchCall(){
 	
+    console.log("key : ", key, "value :", value)
+    let test = {"key":key, "value":value}; //searchKey 그대로 넣으면 왠지 모르지만 [object]로 들어감...
+
+
+    if(key =="" || key == null || value == null || value == "" || value.length < 2){ // 값을 입력안했거나 2글자 이하
+	    alert(" 검색하실 카테고리를 선택하고 두 글자 이상의 검색어를 입력하세요.");
 	
-	// let thiss = $(this);
-	 //console.log(thiss);
-	    //let curPage = $(this).val();
-	   // console.log(curPage);
+    }else{
+	    $.ajax({
+		     url:'/categorySearch.do',
+		     type:'post',
+		     contentType: 'application/json; charset=utf-8',
+		     data: JSON.stringify(test),
+		     datatype: "JSON",
+		     success: function(res){
+		    	 if(res == 0 || res == ""){
+		    		 alert("검색한 내용이 없습니다.")
+		    	 }else{
+		    		 
+		    		 for (list of res){
+				          td_html += ` <input type="checkbox" class="cbox" name="cbox" data-id="${list.id}">
+	                           <div class="num" data-id="${list.id}">${list.id}</div>
+	                           <div class="title" data-value="${list.id}" data-id="${list.id}">${list.name}</div>
+	                           <div class="writer" data-id="${list.id}">${list.description}</div>
+	                           <div class="yn" data-id="${list.id}">${list.useYn}</div>
+	                           <div class="name" data-id="${list.id}">${list.regUser}</div>
+	                           <div class="run" data-id="${list.id}">></div>`;
+				  }
+	                 $(contentArea).append(td_html);
+		    	 }
+			     
+			     
 			 
-	 /*function fn_paging(num){
-			console.log("fn_paging(num) 함수 실행");
-			let curPage = {"curPage" : num}
-			  $.ajax({
-				  url: '/pagination.do',
-			      type: 'post',
-			      data : JSON.stringify(curPage),
-				  datatype: "JSON",
-				  success: function(res) {
-				      console.log("fn_paging(num) 통신 성공" + res);
-				  },fail: function(result) {
-			            fail(error); 
-			        } 
-			    });//ajax끝 */
+		     },
+		     error: function(err){
+			     console.log(err);
+		     }
+		 
+	    });
+    }
+ }
+ 
 	
-//=========================	
+/*********************/
+/*********************/
+/***** 삭제 영역 ******/
+/*******************/	
+	
     var checkBoxArr= []; //체크된 id 값을 담을 배열
-    
-	/* 삭제 : 체크박스 클릭 -> 삭제버튼 */
+	
 	$("#contentArea").on("click",".cbox", function(e){
 		e.stopPropagation(); // 버블링 차단
 		let tg = e.currentTarget;
 		//console.log("tg" , tg);
 		
-		
+		//set을 통해서 배열에 담긴 값을 중복제거한다.
+        const setCollection = new Set(checkBoxArr.map(JSON.stringify));
 		let checkedId = $(tg).data('id'); // 체크된 id값 
 		let cbox = $(".cbox"); // checkbox 개수
 		//checkBoxArr = checkedId; 
@@ -180,18 +294,12 @@ $("#paginationArea").on("click",".num", function(e){
 		//for문 돌면서 check 된 id값을 배열에 담는다
 		$("input[name='cbox']:checked").each(function(i){   
 			
-		   //set을 통해서 배열에 담긴 값을 중복제거한다.
-           const setCollection = new Set(checkBoxArr.map(JSON.stringify));
            //중복이 있으면 true 반환
            const isDuplicate = setCollection.size < checkBoxArr.length;
-           console.log(isDuplicate);
-         
-			if(!isDuplicate) // 중복이 없으면... add..근데 중복 여전함 ㅜ
+           
+			if(!isDuplicate) 
 			    checkBoxArr.push({"id" : $(tg).data('id')});
-			
 		});
-		  console.log("checkBoxArr" , checkBoxArr);
-		  
 	})
 	 
     function deleteCall(){
@@ -212,8 +320,8 @@ $("#paginationArea").on("click",".num", function(e){
 		    });
 	}
 	
-
-  /* 단건 조회 페이지 이동 */
+/*********************/
+/* 단건 조회 페이지 이동 */
   $("#contentArea").on("click",".title",function(e){
 	  e.stopPropagation(); // 버블링 차단
 	  let tg = e.currentTarget;

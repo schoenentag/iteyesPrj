@@ -34,14 +34,18 @@ public class CategoryController {
 	/* 전체조회 */
 	@ResponseBody
 	@RequestMapping("/jsonCategoryList.do")
-	public List<Map<String,String>>jsonCategoryList(@RequestParam(defaultValue="1") int curPage) throws Exception{
+	public List<Map<String,String>>jsonCategoryList(@RequestBody Map<String,Integer> map) throws Exception{
 		System.out.println("jsonCategoryList contoller 실행");
-		
+		System.out.println("LLLLLLLLLLLLLLLLLLLLLLLLLLLIST /jsonCategoryList.do curPage: " + map.get("curPage"));
 		/*전체글 갯수 조회*/
-		int listCnt = categoryService.CategorListyCnt();
+		int curPage = 1;
+		int listCnt = categoryService.CategoryListyCnt();
 		
-		/*pagination 인스턴스 생성 (param :  전체 개시글 개수, 현재 페이지*/ 
-		Pagination pn = new Pagination(listCnt, curPage);
+		if (map.get("curPage") != null  ) {
+			//&& map.get("curPage").isEmpty() X
+			curPage = map.get("curPage"); 
+		} 
+		Pagination pn = new Pagination(listCnt,curPage);
 		
 		Map<String, Object> param = new HashMap<>();
 		/* 받아온 값을 map에 담음*/
@@ -55,14 +59,25 @@ public class CategoryController {
 	@ResponseBody
 	@RequestMapping("/pagination.do")
 	public Pagination pagination(@RequestParam(defaultValue="1") int curPage) throws Exception{
-		
 		/*전체글 갯수 조회*/
-		int listCnt = categoryService.CategorListyCnt();
+		int listCnt = categoryService.CategoryListyCnt();
 		/*pagination 인스턴스 생성 (param :  전체 개시글 개수, 현재 페이지*/ 
 		Pagination pn = new Pagination(listCnt, curPage);
+		return pn;
+	}
+	
+	/* 페이지 이동 test*/
+	@ResponseBody
+	@RequestMapping(value="/paginationMove.do")
+	public Pagination paginationMove(@RequestBody Map<String,Integer> map) throws Exception{
+		
+		/*전체글 갯수 조회*/
+		int listCnt = categoryService.CategoryListyCnt();
+		Pagination pn = new Pagination(listCnt, map.get("curPage"));
 		
 		return pn;
 	}
+	
 	
 	/* 등록 페이지 이동 */
 	@GetMapping("/categoryInsertForm.do")
@@ -85,6 +100,7 @@ public class CategoryController {
 		
 		return categoryService.jsonCategoryInsert2(vo);
 	}
+	
 	/* 카테고리 수정*/
 	@ResponseBody
 	@RequestMapping(value="/categoryUpdate.do", method=RequestMethod.POST)
@@ -106,28 +122,28 @@ public class CategoryController {
 	@RequestMapping(value="/categoryDelete.do", method=RequestMethod.POST)
 	public int categoryDelete(@RequestBody List<Map<String,String>> map) throws Exception {
 		int n = 0;
-		//@RequestParam(value="checkBoxArr[]") String[] id
-		System.out.println("/categoryDelete.do contoller~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-		System.out.println("#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$5 /categoryDelete.do ="+map);
+		//@RequestParam(value="checkBoxArr[]") String[] id 인식불가
 		
 		List<String> ids = new ArrayList<>();
-		
+		/*
+		 *  List Map으로 받아온 id의 값을 List에 한번 더 담는다.
+		 *  중복 제거를 위함.... (개선 필요)
+		 */
 		for (int i = 0; i < map.size(); i++){	
 		    System.out.println(map.get(i).get("id"));
 		    ids.add(map.get(i).get("id"));
-		    
 		}
 		
+		/* 중복 제거된 새로운 list에 값을 담는다. */
 		 List<String> newList = ids.stream().distinct().collect(Collectors.toList());
-	     System.out.println(newList); //중복제거
+	     System.out.println(newList); //중복제거확인 test
 		
+	     /* 중복 제거된 id 값을 delete 처리함. 처리 완료 1*/
 	     for(String id : newList ) {
 			 n = categoryService.jsonCategoryDelete(id);
 		}
 			
-		
 		return n;
-		//return categoryService.jsonCategoryDelete(id);
 	}
 	
 	
@@ -142,8 +158,32 @@ public class CategoryController {
 	@GetMapping("/categoryDetailList.do")
 	public Map<String, String> categoryDetailList(@RequestParam String id) throws Exception{
 		return categoryService.jsonCategoryDetail(id);
-		
 	}
 	
+	/* 검색 */
+	@ResponseBody
+	@RequestMapping("/categorySearch.do")
+	public  List<Map<String,Object>> categorySearch(@RequestBody Map<String, Object> map) throws Exception{
+		System.out.println("Search map-------------------- : "+ map);
+		int curPage = 1;
+		
+		/* 검색글 cnt 조회*/
+		int listCnt = categoryService.CategorySearchCnt(map);
+		
+		if (map.get("curPage") != null  ) {
+			curPage = Integer.parseInt((String)map.get("curPage"));
+		} 
+		
+		Pagination pn = new Pagination(listCnt,curPage);
+		
+		Map<String, Object> param = new HashMap<>();
+		/* 받아온 값을 map에 담음*/
+		param.put("key", map.get("key"));
+		param.put("value", map.get("value"));
+		param.put("pageStart", pn.getPageSize());
+		param.put("perPageNum", pn.getStartIndex());
+		
+		return categoryService.jsonCategorySearch(param);
+	}
 
 }

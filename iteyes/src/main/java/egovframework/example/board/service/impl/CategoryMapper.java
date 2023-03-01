@@ -36,8 +36,10 @@ public interface CategoryMapper {
 	/* 삭제 */
 	int jsonCategoryDelete(String id) throws Exception;
 	/* 검색 */
-	List<Map<String, String>> jsonCategorySearch(Map<String, String> map) throws Exception; 
+	List<Map<String, Object>> jsonCategorySearch(Map<String, Object> map) throws Exception; 
 	/* 전체글 cnt*/
-	int CategorListyCnt() throws Exception;
+	int CategoryListyCnt() throws Exception;
+	/* 검색글 cnt */
+	int CategorySearchCnt(Map<String, Object>map) throws Exception;
 	
 }

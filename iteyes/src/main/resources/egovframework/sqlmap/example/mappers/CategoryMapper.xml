@@ -6,11 +6,10 @@
     <select id="jsonCategoryList"  resultType="egovframework.example.board.service.impl.CustomMap">
         SELECT ID, NAME, DESCRIPTION, USE_YN, REG_USER
         FROM SAMPLE ORDER BY ID DESC
-        LIMIT #{pageStart} 
-        OFFSET #{perPageNum}
         
-        <!--  특정페이지 첫번째 글의 행 -->
-		 <!-- 한페이지당 보여줄 게시글의 개수  -->
+          <!--  특정페이지 첫번째 글의 행, 한페이지당 보여줄 게시글의 개수 -->
+          LIMIT #{pageStart} OFFSET #{perPageNum}
+        
     </select>
     
     <!-- 단건 조회 -->
@@ -20,7 +19,7 @@
             WHERE ID = #{id}
     </select>
     
-    <!-- 등록 -->
+    <!-- 등록 : 사용안함 -->
     <insert id="jsonCategoryInsert" parameterType="egovframework.example.board.service.impl.CustomMap">
         INSERT INTO SAMPLE (ID, NAME, DESCRIPTION, USE_YN, REG_USER)
         VALUES (NEXTVAL(id_seq), #{name}, #{description}, #{usern}, #{regUser})
@@ -46,10 +45,39 @@
     </delete>
     
     <!-- 전체 조회 cnt -->
-    <select id="CategorListyCnt" resultType="int">
+    <select id="CategoryListyCnt" resultType="int">
       SELECT COUNT(id) AS LIST_CNT 
       FROM SAMPLE
     </select>
     
+    <!-- 검색 -->
+    <select id="jsonCategorySearch" parameterType="egovframework.example.board.service.impl.CustomMap" resultType="CustomMap">
+        SELECT ID, NAME, DESCRIPTION, USE_YN, REG_USER
+        FROM SAMPLE 
+        <where>
+           <choose> 
+               <when test="key=='1'.toString()"> NAME LIKE CONCAT('%',#{value},'%')</when>
+               <when test="key=='2'.toString()"> DESCRIPTION LIKE CONCAT('%',#{value},'%')</when>
+               <when test="key=='3'.toString()"> REGUSER LIKE CONCAT('%',#{value},'%')</when>
+           </choose>
+        </where> 
+          ORDER BY ID DESC
+          LIMIT #{pageStart} OFFSET #{perPageNum}
+    </select>
+    
+    <!-- 검색 cnt -->
+    <select id="CategorySearchCnt" parameterType="egovframework.example.board.service.impl.CustomMap" resultType="int">
+        SELECT COUNT(ID)
+        FROM SAMPLE 
+        <where>
+        <choose> 
+               <when test="key=='1'.toString()"> NAME LIKE CONCAT('%',#{value},'%')</when>
+               <when test="key=='2'.toString()"> AND DESCRIPTION LIKE CONCAT('%',#{value},'%')</when>
+               <when test="key=='3'.toString()"> AND REGUSER LIKE CONCAT('%',#{value},'%')</when>
+           </choose>
+        
+        </where>
+          
+    </select>
   
 </mapper>

@@ -1,6 +1,18 @@
 package egovframework.example.board.service;
 
 import lombok.Data;
+/**
+ * @Class Name : pagination.java
+ * @Description : 페이징 처리 할 때 사용 하는 class
+ * @Modification Information
+ * @
+ * @  수정일      수정자              수정내용
+ * @ ---------   ---------   -------------------------------
+ * @ 2023.02.27               최초생성
+ *
+ * @author 김하은
+ * 
+ */
 
 @Data
 public class Pagination {

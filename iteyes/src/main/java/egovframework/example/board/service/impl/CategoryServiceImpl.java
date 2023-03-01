@@ -48,19 +48,24 @@ public class CategoryServiceImpl implements CategoryService {
 
 	/* 검색 */
 	@Override
-	public List<Map<String, String>> jsonCategorySearch(Map<String, String> map) throws Exception {
+	public List<Map<String, Object>> jsonCategorySearch(Map<String, Object> map) throws Exception {
 		return cMap.jsonCategorySearch(map);
 	}
 
 	/* 전체글 cnt */
 	@Override
-	public int CategorListyCnt() throws Exception {
-		return cMap.CategorListyCnt();
+	public int CategoryListyCnt() throws Exception {
+		return cMap.CategoryListyCnt();
 	}
 
 	@Override
 	public int jsonCategoryInsert2(CategoryVO vo) throws Exception {
 		return cMap.jsonCategoryInsert2(vo);
+	}
+
+	@Override
+	public int CategorySearchCnt(Map<String, Object> map) throws Exception {
+		return cMap.CategorySearchCnt(map);
 	}
 
 }
