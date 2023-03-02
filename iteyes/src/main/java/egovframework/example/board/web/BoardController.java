@@ -120,7 +120,7 @@ public class BoardController {
             String fileName = map.get("id") + "_" + ran + "_" + uploadFile.getOriginalFilename();
             
             // 파일 저장
-            File saveFile = new File("C:/Users/Me/Desktop/FileServer", fileName);
+            File saveFile = new File("C:/FileServer", fileName);
             uploadFile.transferTo(saveFile);
             
             // map에 추가하고 서비스로 넘김
@@ -142,7 +142,7 @@ public class BoardController {
 //            System.out.println(encodedFileName);
             System.out.println(downloadFile);
             
-            String path = "C:/Users/Me/Desktop/FileServer/" + downloadFile;
+            String path = "C:/FileServer/" + downloadFile;
             System.out.println(path);
             
             File file = new File(path);
