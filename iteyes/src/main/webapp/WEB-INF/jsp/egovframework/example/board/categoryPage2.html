@@ -26,7 +26,7 @@
                 </select>
                 <div class="search">
                     <input type="text" id="val" name="val" placeholder="검색어를 입력해주세요.">
-                    <button onclick="searchCall()" >검색</button>
+                    <button id="search" name="search" onclick="searchCall()" >검색</button>
                </div>
                 <li><a href="#" onclick="deleteCall()">삭제</a></li>
                 <li><a href="/categoryInsertForm.do">등록</a></li>
@@ -56,6 +56,18 @@
     </div>
 
 <script type="text/javascript">
+//검색시 엔터키 적용
+$(document).ready(function() {
+	//키워드를 입력하고 엔터키
+    $("#val").keyup(function(e) {
+
+    	//enter key 
+        if (e.which === 13) {
+            $("#search").click();
+        }
+    });
+})
+
 localStorage.removeItem('category')
 /*변수 선언*/
 let key; //검색할 옵션 값을 담을 변수;
@@ -64,7 +76,8 @@ let searchKey = {"key" : key, "value" : value};
 
     var isAjaxing = false; // 중복제거를 위한 변수
  	var td_html="";
- 	var testArea ;
+ 	//var testArea ;
+ 	//var contentArea;
  	 
  	/*목록 출력하는 ajax와 페이징처리 되는 ajax를 순서대로 호출한다.*/
  	 new Promise( (succ, fail)=>{ 
@@ -77,8 +90,6 @@ let searchKey = {"key" : key, "value" : value};
 			  data : JSON.stringify(searchKey),
 			  datatype: "JSON",
 			  success : function(data) {
-				  //$("#contentArea").empty();
-				 //setTimeout(function(){ isAjaxing = false;}, 10000) //중복방지를 위한 타임아웃설정	  
 				 for (list of data){
 					 td_html += ` <input type="checkbox" class="cbox" name="cbox" data-id="${list.id}">
 		                    <div class="num" data-id="${list.id}" >${list.id}</div>
@@ -97,35 +108,33 @@ let searchKey = {"key" : key, "value" : value};
 			   
 		}).then((arg) =>{    /* 2. pagination ajax를 실행 */
 				let board_html = "";
-			   // let data = {"curPage" : pageNum}; 
 			
 			    $.ajax({
 			        url: '/pagination.do',
 			        type: 'post',
-			        //data : JSON.stringify(data),
 					datatype: "JSON",
 			        success: function(res) {
 			            
 			        	/* 현재 페이지가 1이 아니라면 
 			        	    <<(1 page) , <(이전페이지 prevPage = curPage -1) 출력 */
 			            if(res.curRange != 1){
-				            board_html+= `<a href="#" class="bt first" onClick="fn_paging(1)" data-value="1"><<</a> 
-				                           <a href="#" class="bt prev" onClick="fn_paging('${res.prevPage}')" data-value="${res.prevPage}"><</a>`;
+				            board_html+= `<a href="#" class="bt first" id="first" onClick="fn_paging(1)" data-value="1"><<</a> 
+				                           <a href="#" class="bt prev" id="prev" onClick="fn_paging('${res.prevPage}')" data-value="${res.prevPage}"><</a>`;
 			            } 
 			            /* 페이지 번호 생성 (클릭된 번호는 배경색표시) */    		  
 			            for (let i = res.startPage; i <= res.endPage; i++){
 			            	//console.log(" '/pagination.do' res.curPage : "+ res.curPage);
 			            	if( i == res.curPage){
-			            		board_html+= `<a href="#" class="num on" id="pageNum" name="pageNum" data-value="${i}">${i}</a> `;
+			            		board_html+= `<a href="#" class="num on" id="pageNum" name="pageNum" data-value="${i}" onClick="fn_paging('${i }')" >${i}</a> `;
 			            	}else{
-				                board_html+= `<a href="#" class="num" id="pageNum" name="pageNum" data-value="${i}">${i}</a> `;
+				                board_html+= `<a href="#" class="num" id="pageNum" name="pageNum" data-value="${i}" onClick="fn_paging('${i }')" >${i}</a> `;
 			            	}
 			            }
 			            /* 현재 페이지가 총 페이지 수(pageCnt) 값이 아니면서 총 페이지 수가 0 보다 클때 
 			                > (다음 페이지 curPage +), >> (마지막페이지) 출력 */
 			            if( res.curPage != res.pageCnt & res.pageCnt > 0 ){
-			                board_html+=`<a href="#" class="bt next" onClick="fn_paging('${res.nextPage }')" data-value="${res.nextPage }">></a>
-			                             <a href="#" class="bt last" onClick="fn_paging('${res.pageCnt  }')" data-value="${res.pageCnt }">>></a>`;
+			                board_html+=`<a href="#" class="bt next" id="next" onClick="fn_paging('${res.nextPage }')" data-value="${res.nextPage }">></a>
+			                             <a href="#" class="bt last" id="last" onClick="fn_paging('${res.pageCnt  }')" data-value="${res.pageCnt }">>></a>`;
 			            }
 			            $(".board_page").append(board_html);
 			        },
@@ -146,14 +155,13 @@ $("#paginationArea").on("click",".num", function(e){
 	tg = e.currentTarget; //target
 	curPage = $(tg).data('value'); //
 	
-	fn_paging(curPage) //ajax 함수 호출
+	//fn_paging(curPage) //ajax 함수 호출
 	
 });
 
 /* 2. 페이지번호 클릭시 발생하는 함수   */
-
- 
 function fn_paging(curPage){
+	console.log("fn_pageing(curPage) :", curPage)
 	let page = {"curPage" : curPage}
 	
 	/* 페이징처리 되는 ajax와 목록 출력하는 ajax 다시 재 호출.*/
@@ -181,6 +189,10 @@ function fn_paging(curPage){
 				      if(pageArr[j] != $(tg).data('value'))
 						$(tg).attr('class', 'num on');
 				  }	  
+						  
+				// 화살표 버튼 값 변경
+				//$("#next").attr("onClick",fn_paging('${res.nextPage }'))
+				//$("#next").attr("onClick","fn_paging('${res.nextPage }')")
 				  
 			  },fail: function(result) {
 		            fail(error); 
@@ -193,28 +205,28 @@ function fn_paging(curPage){
 						  data : JSON.stringify(page),
 						  datatype: "JSON",
 						  success : function(data) {
-							  td_html = "";
-							  $("#contentArea").remove();
-							  $("#testArea").remove();
-							
-							 testArea = document.createElement("div");
-							 testArea.setAttribute('id', 'testArea');
-							 $(".board_list").append(testArea);
-							 
-							 $(td_html).html("")
-							 //console.log("td_html : ", $(td_html).html())
-							      for (list of data){
-							    	  
-							    	  td_html += ` <input type="checkbox" class="cbox" name="cbox" data-id="${list.id}">
-					                    <div class="num" data-id="${list.id}">${list.id}</div>
-					                    <div class="title" data-value="${list.id}" data-id="${list.id}">${list.name}</div>
-					                    <div class="writer" data-id="${list.id}">${list.description}</div>
-					                    <div class="yn" data-id="${list.id}">${list.useYn}</div>
-					                    <div class="name" data-id="${list.id}">${list.regUser}</div>
-					                    <div class="run" data-id="${list.id}">></div>`;
-							      }
-				                  $(testArea).append(td_html);
-						
+						 
+						  // test
+				                  td_html = "";
+								  $("#contentArea").remove();
+								
+								  contentArea = document.createElement("div");
+								  contentArea.setAttribute('id', 'contentArea');
+								 $(".board_list").append(contentArea);
+								 
+								 $(td_html).html("")
+								      for (list of data){
+								    	  
+								    	  td_html += ` <input type="checkbox" class="cbox" name="cbox" data-id="${list.id}">
+						                    <div class="num" data-id="${list.id}">${list.id}</div>
+						                    <div class="title" data-value="${list.id}" data-id="${list.id}">${list.name}</div>
+						                    <div class="writer" data-id="${list.id}">${list.description}</div>
+						                    <div class="yn" data-id="${list.id}">${list.useYn}</div>
+						                    <div class="name" data-id="${list.id}">${list.regUser}</div>
+						                    <div class="run" data-id="${list.id}">></div>`;
+								      }
+					                  $(contentArea).append(td_html);
+						  
 						  }, 
 						  error : function(err){
 						    console.log(err);
@@ -253,11 +265,11 @@ function searchCall(){
 		    	 }else{
 		    		  td_html = "";
 					  $("#contentArea").remove();
-					  $("#testArea").remove();
+					  //$("#testArea").remove();
 					
-					 testArea = document.createElement("div");
-					 testArea.setAttribute('id', 'testArea');
-					 $(".board_list").append(testArea);
+					  contentArea = document.createElement("div");
+					  contentArea.setAttribute('id', 'contentArea');
+					 $(".board_list").append(contentArea);
 					 
 					 $(td_html).html("")
 					 //console.log("td_html : ", $(td_html).html())
@@ -271,7 +283,7 @@ function searchCall(){
 			                    <div class="name" data-id="${list.id}">${list.regUser}</div>
 			                    <div class="run" data-id="${list.id}">></div>`;
 					      }
-		                  $(testArea).append(td_html);
+		                  $(contentArea).append(td_html);
 		    	 }
 			     
 			     
@@ -334,13 +346,21 @@ function searchCall(){
 	}
 	
 /*********************/
-/* 단건 조회 페이지 이동 */
-  $("#contentArea").on("click",".title",function(e){
+/* 단건 조회 페이지 이동 => 페이지 이동 후 조회 안 됨*/ 
+  /*$("#contentArea").on("click",".title",function(e){
 	  e.stopPropagation(); // 버블링 차단
 	  let tg = e.currentTarget;
 	  let prev = $(tg).prev().html(); //id값
 	  location.href = '/categoryDetail.do?id='+prev; //페이지 이동
-  })
+  })*/
+ /* 개선 사항*/
+ $(document).on('click', '.title', function(e){
+	 let tg = e.currentTarget;
+	 let prev = $(tg).prev().html();
+	 location.href = '/categoryDetail.do?id='+prev; //페이지 이동
+ 
+ })
+  
   
   // 게시글 목록으로 이동
   $(document).on('click', '.run', function(){

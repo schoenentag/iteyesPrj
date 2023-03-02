@@ -20,11 +20,16 @@
 
         <div>
             <button onclick="UpdateCall()">수정</button>
-            <button>목록</button>
+            <button id ="back" onclick="back()">목록</button>
         </div>
 
     </div>
 <script type="text/javascript">
+function back(){
+	window.history.back();
+}
+    //$("#back").keyup(function(e) {
+
 
    const url = new URL(window.location.href); //현재 URL
    const urlParams = url.searchParams; //파라미터 값 읽기
@@ -57,7 +62,12 @@
             </tr>
             <tr>
                 <th class="board_sub_bg">사용여부</th>
-                <td id="oldUseYn"><input type="text"  class="content" id="useYn" name="useYn" value="${list.useYn}" readOnly></td>
+                <td id="oldUseYn">
+	                <select id="useYn" name="useYn" style="width: 100px; height: 50px; margin-left: 4px;">
+		                <option value="Y">Y</option>
+		                <option value="N">N</option>
+	                </select>
+                </td>
             </tr>
             <tr>
                 <th class="board_sub_bg">등록자</th>
@@ -79,30 +89,18 @@ $("#tbl").on("click",".content", function(e){
 	
 	//readOnly 해제하여 수정 가능하도록 설정
 	for(let i = 0; i < inputs.length; i++ ){
-		//console.log("inputs[i].id : " ,inputs[i].id);
-		//console.log($(tg).attr());
 		if(inputs[i].id == "regUser"){
 		    inputs[i].readOnly = true; //등록자는 변경할 수 없음
 		}else{
 		    inputs[i].readOnly = false;
 		}
-		
-		/* 인식못함...
-		if($(tg).attr('id') == "useYN"){
-			console.log("ooooo")
-			console.log(inputs[i].id == "useYN");
-			let newTag = `<select id="useYn" name="useYn" style="width: 100px; height: 50px; margin-left: 4px;">
-	            <option value="Y">Y</option>
-	            <option value="N">N</option></select>`;
-			$('oldUseYn').append(newTag);
-			
-		}*/
+	
 	}
 	
 	//새로운 값을 변수에 담는다.
 	name = $('#name').val();
 	description = $('#description').val();
-	useYn = ($("#useYn")).val();
+	useYn = ($("select[name=useYn] option:selected")).val();
 	regUser = $('#regUser').val();
 	
 	newContent = {
@@ -133,7 +131,7 @@ function UpdateCall(){
 	    });
 
 	}
-/* 단건 수정 ajax*/
+	
 </script>    
 </body>
 </html>
