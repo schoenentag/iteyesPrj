@@ -64,6 +64,7 @@ let searchKey = {"key" : key, "value" : value};
 
     var isAjaxing = false; // 중복제거를 위한 변수
  	var td_html="";
+ 	var testArea ;
  	 
  	/*목록 출력하는 ajax와 페이징처리 되는 ajax를 순서대로 호출한다.*/
  	 new Promise( (succ, fail)=>{ 
@@ -77,7 +78,7 @@ let searchKey = {"key" : key, "value" : value};
 			  datatype: "JSON",
 			  success : function(data) {
 				  //$("#contentArea").empty();
-				 setTimeout(function(){ isAjaxing = false;}, 10000) //중복방지를 위한 타임아웃설정	  
+				 //setTimeout(function(){ isAjaxing = false;}, 10000) //중복방지를 위한 타임아웃설정	  
 				 for (list of data){
 					 td_html += ` <input type="checkbox" class="cbox" name="cbox" data-id="${list.id}">
 		                    <div class="num" data-id="${list.id}" >${list.id}</div>
@@ -141,7 +142,6 @@ let searchKey = {"key" : key, "value" : value};
 let curpage ; // 현재 페이지 변수
 let tg;
 $("#paginationArea").on("click",".num", function(e){
-    console.log("페이지 클릭");
 	e.stopPropagation(); // 버블링 차단
 	tg = e.currentTarget; //target
 	curPage = $(tg).data('value'); //
@@ -151,6 +151,8 @@ $("#paginationArea").on("click",".num", function(e){
 });
 
 /* 2. 페이지번호 클릭시 발생하는 함수   */
+
+ 
 function fn_paging(curPage){
 	let page = {"curPage" : curPage}
 	
@@ -169,17 +171,16 @@ function fn_paging(curPage){
 					  if (i != res.curPage)
 					      pageArr.push(i);
 				  }
+						  console.log(pageArr)
 					  
 				  //반복문으로 선택된 페이지만 배경색 처리
 				  for (let j = 0; j < res.endPage; j++){
 					  
-				      if(pageArr[j] == $("[name=pageNum]").eq(j).data('value')){
-						  $("[name=pageNum]").eq(j).attr('class','num');
-					  
-					  }else if(res.curPage == $(tg).data('value')){
-						  $(tg).attr('class', 'num on');
-					  }
-				  }
+					   $("[name=pageNum]").eq(j).attr('class','num');
+				      
+				      if(pageArr[j] != $(tg).data('value'))
+						$(tg).attr('class', 'num on');
+				  }	  
 				  
 			  },fail: function(result) {
 		            fail(error); 
@@ -192,22 +193,28 @@ function fn_paging(curPage){
 						  data : JSON.stringify(page),
 						  datatype: "JSON",
 						  success : function(data) {
-							  //td_html = "";
-							  $("#contentArea").empty();
-							 // $(td_html).remove();
-							 // console.log("$(#contentArea).empty(); : ", $("#contentArea").html());
-							 // $(td_html).remove();
-							  
-							  for (list of data){
-							      td_html += ` <input type="checkbox" class="cbox" name="cbox" data-id="${list.id}">
-				                    <div class="num" data-id="${list.id}">${list.id}</div>
-				                    <div class="title" data-value="${list.id}" data-id="${list.id}">${list.name}</div>
-				                    <div class="writer" data-id="${list.id}">${list.description}</div>
-				                    <div class="yn" data-id="${list.id}">${list.useYn}</div>
-				                    <div class="name" data-id="${list.id}">${list.regUser}</div>
-				                    <div class="run" data-id="${list.id}">></div>`;
-							  }
-				              $(contentArea).append(td_html);
+							  td_html = "";
+							  $("#contentArea").remove();
+							  $("#testArea").remove();
+							
+							 testArea = document.createElement("div");
+							 testArea.setAttribute('id', 'testArea');
+							 $(".board_list").append(testArea);
+							 
+							 $(td_html).html("")
+							 //console.log("td_html : ", $(td_html).html())
+							      for (list of data){
+							    	  
+							    	  td_html += ` <input type="checkbox" class="cbox" name="cbox" data-id="${list.id}">
+					                    <div class="num" data-id="${list.id}">${list.id}</div>
+					                    <div class="title" data-value="${list.id}" data-id="${list.id}">${list.name}</div>
+					                    <div class="writer" data-id="${list.id}">${list.description}</div>
+					                    <div class="yn" data-id="${list.id}">${list.useYn}</div>
+					                    <div class="name" data-id="${list.id}">${list.regUser}</div>
+					                    <div class="run" data-id="${list.id}">></div>`;
+							      }
+				                  $(testArea).append(td_html);
+						
 						  }, 
 						  error : function(err){
 						    console.log(err);
@@ -221,17 +228,12 @@ function fn_paging(curPage){
 /*********************/
 /***** 검색 영역 ******/
 /*******************/
-// input창에서 마우스 커서가 빠져나갈때 값을 담는다.
- $("#val").blur(function(){ 
-	 key = $("#key").val();//검색할 옵션 값을 담을 변수; N(1), D(2), U(3)
-	 value = $("#val").val();
-	 console.log("key: ", key, "value: ", value)
- })
  
 function searchCall(){
 	
-    console.log("key : ", key, "value :", value)
-    let test = {"key":key, "value":value}; //searchKey 그대로 넣으면 왠지 모르지만 [object]로 들어감...
+	 key = $("#key").val();//검색할 옵션 값을 담을 변수; N(1), D(2), U(3)
+	 value = $("#val").val();
+     let test = {"key":key, "value":value}; //searchKey 그대로 넣으면 왠지 모르지만 [object]로 들어감...
 
 
     if(key =="" || key == null || value == null || value == "" || value.length < 2){ // 값을 입력안했거나 2글자 이하
@@ -244,21 +246,32 @@ function searchCall(){
 		     contentType: 'application/json; charset=utf-8',
 		     data: JSON.stringify(test),
 		     datatype: "JSON",
-		     success: function(res){
-		    	 if(res == 0 || res == ""){
+		     success: function(data){
+		    	 $("#contentArea").remove();
+		    	 if(data == 0 || data == ""){
 		    		 alert("검색한 내용이 없습니다.")
 		    	 }else{
-		    		 
-		    		 for (list of res){
-				          td_html += ` <input type="checkbox" class="cbox" name="cbox" data-id="${list.id}">
-	                           <div class="num" data-id="${list.id}">${list.id}</div>
-	                           <div class="title" data-value="${list.id}" data-id="${list.id}">${list.name}</div>
-	                           <div class="writer" data-id="${list.id}">${list.description}</div>
-	                           <div class="yn" data-id="${list.id}">${list.useYn}</div>
-	                           <div class="name" data-id="${list.id}">${list.regUser}</div>
-	                           <div class="run" data-id="${list.id}">></div>`;
-				  }
-	                 $(contentArea).append(td_html);
+		    		  td_html = "";
+					  $("#contentArea").remove();
+					  $("#testArea").remove();
+					
+					 testArea = document.createElement("div");
+					 testArea.setAttribute('id', 'testArea');
+					 $(".board_list").append(testArea);
+					 
+					 $(td_html).html("")
+					 //console.log("td_html : ", $(td_html).html())
+					      for (list of data){
+					    	  
+					    	  td_html += ` <input type="checkbox" class="cbox" name="cbox" data-id="${list.id}">
+			                    <div class="num" data-id="${list.id}">${list.id}</div>
+			                    <div class="title" data-value="${list.id}" data-id="${list.id}">${list.name}</div>
+			                    <div class="writer" data-id="${list.id}">${list.description}</div>
+			                    <div class="yn" data-id="${list.id}">${list.useYn}</div>
+			                    <div class="name" data-id="${list.id}">${list.regUser}</div>
+			                    <div class="run" data-id="${list.id}">></div>`;
+					      }
+		                  $(testArea).append(td_html);
 		    	 }
 			     
 			     
