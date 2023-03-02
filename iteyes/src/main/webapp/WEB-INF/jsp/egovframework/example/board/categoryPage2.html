@@ -56,7 +56,7 @@
     </div>
 
 <script type="text/javascript">
-
+localStorage.removeItem('category')
 /*변수 선언*/
 let key; //검색할 옵션 값을 담을 변수;
 let value; // 검색 값
@@ -327,6 +327,12 @@ function searchCall(){
 	  let tg = e.currentTarget;
 	  let prev = $(tg).prev().html(); //id값
 	  location.href = '/categoryDetail.do?id='+prev; //페이지 이동
+  })
+  
+  // 게시글 목록으로 이동
+  $(document).on('click', '.run', function(){
+    localStorage.setItem('category',$(this).prev().prev().prev().prev().text())
+    location.href='goBoard.do'
   })
 </script>
 </body>

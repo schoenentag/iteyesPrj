@@ -11,6 +11,7 @@
   <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+  
   <title>게시글</title>
 </head>
 <body>
@@ -93,6 +94,22 @@
     $('.button_2').replaceWith(`<button class="button_2" type="submit" form="formBody">등록`)
     $('.button_3').replaceWith(`<button class="button_3" onclick="history.back()">취소`)
     
+    $('.button_2').on('click', (e)=>{
+      e.preventDefault();
+      Swal.fire({
+          title: "등록하시겠습니까?",
+          icon: "warning",
+          confirmButtonText: "등록",
+          showCancelButton: true,
+          cancelButtonText: '취소',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          $('#formBody').submit();
+        }
+      })
+    })
+    
+    
   }
   
 
@@ -162,18 +179,43 @@
           $('.board_detail').replaceWith(`<textarea name="content" style="width: 100%" rows="9" required>${res['content']}`)
           $('.button_2').replaceWith(`<button class="button_2" type="submit" form="formBody">수정`)
           $('.button_3').replaceWith(`<button class="button_3" onclick="history.back()">취소`)
-            
+          
+          $('.button_2').on('click', (e)=>{
+            e.preventDefault();
+            Swal.fire({
+                title: "수정하시겠습니까?",
+                icon: "warning",
+                confirmButtonText: "수정",
+                showCancelButton: true,
+                cancelButtonText: '취소',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                $('#formBody').submit();
+              }
+            })
+          })
+    
         })
         
         // 게시글 삭제
-        $('.button_3').on('click',()=>{
-          $.ajax({
-            url: "boardDelete.do?id="+localStorage.getItem('boardId'),
-            success: () => {
-              localStorage.removeItem('boardId');
-              window.location.href='/goBoard.do' 
-            },
+        $('.button_3').on('click', (e)=>{
+          e.preventDefault();
+          Swal.fire({
+              title: "삭제하시겠습니까?",
+              icon: "warning",
+              confirmButtonText: "삭제",
+              showCancelButton: true,
+              cancelButtonText: '취소',
+          }).then((result) => {
+            $.ajax({
+              url: "boardDelete.do?id="+localStorage.getItem('boardId'),
+              success: () => {
+                localStorage.removeItem('boardId');
+                window.location.href='/goBoard.do' 
+              },
+            })
           })
+        
         })
         
         

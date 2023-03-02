@@ -163,6 +163,7 @@ $(function() {
     search: {
       return: true,
     },
+    searchCols: [null, {search: localStorage.getItem('category')}], // 초기 로딩시
     order: [2, 'desc'], 
     
     dom: "<'row'<'col-12 col-sm-4' l ><'col-12 col-sm-8 text-end pe-4' B >>" +
@@ -230,8 +231,6 @@ $(function() {
     ]
   });
   // End: DataTables 객체
-  
-  
   
   
   
