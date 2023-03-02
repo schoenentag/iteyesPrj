@@ -16,21 +16,6 @@ public class BoardServiceImpl implements BoardService {
 	BoardMapper mapper;
 
 	@Override
-	public void updateBoard(BoardVO vo) throws Exception {
-
-	}
-
-	@Override
-	public void deleteBoard(BoardVO vo) throws Exception {
-
-	}
-
-	@Override
-	public BoardVO selectBoard(BoardVO vo) throws Exception {
-		return null;
-	}
-
-	@Override
 	public List<Map<?,?>> selectBoardList() throws Exception {
 		return mapper.selectBoardList();
 	}
@@ -53,6 +38,16 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public void boardInsertProc(Map<?, ?> map) throws Exception {
         mapper.boardInsertProc(map);
+    }
+
+    @Override
+    public void boardUpdateProc(Map<?, ?> map) throws Exception {
+        mapper.boardUpdateProc(map);
+    }
+
+    @Override
+    public void boardDelete(String id) throws Exception {
+        mapper.boardDelete(id);
     }
 
 

@@ -1,8 +1,15 @@
 package egovframework.example.board.web;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -38,7 +45,6 @@ public class BoardController {
     @RequestMapping("/boardOne.do")
     public Map<?, ?> boardOne(@RequestParam("id") String id) {
         System.out.println(id);
-//        model.addAttribute("id", service.boardOne(id));
         return service.boardOne(id);
     }
     
@@ -101,20 +107,87 @@ public class BoardController {
         return vo;
     }
 
-
     
     // 게시글 등록
     @RequestMapping("/boardInsertProc.do")
-    public String boardInsertProc(@RequestParam Map<?,?> map) throws Exception {
-        System.out.println("ejoifjwaeoifjw");
+    public String boardInsertProc(@RequestParam Map<String, String> map, MultipartFile uploadFile) throws Exception {
         System.out.println(map);
-        service.boardInsertProc(map);
+        
+        // 파일이 존재하면
+        if (!uploadFile.isEmpty()) {
+            // 저장파일명(난수활용)
+            int ran = (int) (Math.random() * 9000) + 1000;
+            String fileName = map.get("id") + "_" + ran + "_" + uploadFile.getOriginalFilename();
+            
+            // 파일 저장
+            File saveFile = new File("C:/Users/Me/Desktop/FileServer", fileName);
+            uploadFile.transferTo(saveFile);
+            
+            // map에 추가하고 서비스로 넘김
+            map.put("fileName", fileName);
+            service.boardInsertProc(map);
+        } else {
+            service.boardInsertProc(map);
+        }
+        
         return "redirect:goBoard.do";
+    }
+    
+    
+    // 게시글 첨부파일 다운로드
+    @RequestMapping("/downloadFile.do")
+    public void download(HttpServletRequest request, HttpServletResponse response, String downloadFile) throws Exception {
+        try {
+//            String encodedFileName = EncodeFileName.getEncodedFileName(downloadFile, EncodeFileName.getBrowser(request));
+//            System.out.println(encodedFileName);
+            System.out.println(downloadFile);
+            
+            String path = "C:/Users/Me/Desktop/FileServer/" + downloadFile;
+            System.out.println(path);
+            
+            File file = new File(path);
+            // downFileName: 다운창에 표시되는 이름. 한글변환(URLEncoder.encode), '+'문자를 공백(%20)으로 변환
+            String downFileName = URLEncoder.encode(file.getName().substring(9,file.getName().length()),"UTF-8").replaceAll("\\+", "%20");
+            response.setHeader("Content-Disposition", "attachment;filename=" + downFileName); // 다운로드 되거나 로컬에 저장되는 용도로 쓰이는지를 알려주는 헤더
+            
+            FileInputStream fileInputStream = new FileInputStream(path); // 파일 읽어오기 
+            OutputStream out = response.getOutputStream();
+            
+            int read = 0;
+                byte[] buffer = new byte[1024];
+                while ((read = fileInputStream.read(buffer)) != -1) { // 1024바이트씩 계속 읽으면서 outputStream에 저장, -1이 나오면 더이상 읽을 파일이 없음
+                    out.write(buffer, 0, read);
+                }
+        } catch (Exception e) {
+            throw new Exception("download error");
+        }
     }
     
     
     
     
+    // 게시글 수정
+    @RequestMapping("/boardUpdateProc.do")
+    public String boardUpdateProc(@RequestParam Map<?,?> map) throws Exception {
+        System.out.println(map);
+        service.boardUpdateProc(map);
+        return "redirect:goBoardOne.do";
+    }
+    
+    
+    // 게시글 삭제
+    @ResponseBody
+    @RequestMapping("/boardDelete.do")
+    public void boardDelete(@RequestParam("id") String id) throws Exception {
+        System.out.println(id);
+        service.boardDelete(id);
+    }
+    
+    
+    
+    
+    
+    /*
     @ResponseBody
     @RequestMapping("/selectBoardList.do")
     List<Map<?, ?>> selectBoardList() throws Exception {
@@ -122,12 +195,13 @@ public class BoardController {
         System.out.println(service.selectBoardList());
         return service.selectBoardList();
     }
-
+    
     @ResponseBody
     @RequestMapping("/ex1.do")
     void ex1(@RequestBody Map<?,?> vo) throws Exception {
         System.out.println("ttttttttttttttttttttttt");
         System.out.println(vo);
     }
+    */
 
 }

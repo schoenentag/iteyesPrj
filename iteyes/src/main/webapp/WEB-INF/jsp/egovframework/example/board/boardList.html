@@ -131,6 +131,7 @@
 
 <script>
 $(function() {
+  localStorage.removeItem('boardId');
   
   let table = $('#boardInfos').DataTable({
     processing: true,
@@ -157,12 +158,12 @@ $(function() {
       {data: 'dt', className: 'dt-center', render: $.fn.dataTable.render.moment('x','YYYY-MM-DD HH:mm:ss','ko')},
       {data: 'viewCount', className: 'dt-center'},
       {data: 'fileName', render: $.fn.dataTable.render.ellipsis( 10 ), defaultContent: ''},
-      {data: 'pw', className: 'dt-center'},
+      {data: 'pw', className: 'dt-center', visible: false},
     ],
     search: {
       return: true,
     },
-    order: [0, 'desc'],
+    order: [2, 'desc'], 
     
     dom: "<'row'<'col-12 col-sm-4' l ><'col-12 col-sm-8 text-end pe-4' B >>" +
          "<'row'< tr >>" +
@@ -229,6 +230,8 @@ $(function() {
     ]
   });
   // End: DataTables 객체
+  
+  
   
   
   
@@ -323,23 +326,25 @@ $(function() {
     localStorage.setItem('boardId', $(this).children('td:eq(0)').text());
     location.href='goBoardOne.do'
 
-//     $.ajax({
-//       url: "boardOne.do?id="+this.children[0].innerText,
-//       success: function(res){
-//         $('html').load('goBoardOne.do',res,function(){
-//           $('.box_category_name').html(res['category'])
-//           $('.box_name_text').html(res['title'])
-//           $('.box_days').html(moment(res['dt']).format('YYYY-MM-DD HH:mm'))
-//           $('.user_name_para').html(res['regUser'])
-//           $('.cont_para').html(res['viewCount'])
-//           $('.board_detail').html(res['content'])
-//           $('.file').html(res['fileName'])
-//           $('.button_1').on('click',()=>{
-//             location.href="goBoard.do"
-//           })
-//         });
-//       }
-//     })
+    /*
+    $.ajax({
+      url: "boardOne.do?id="+this.children[0].innerText,
+      success: function(res){
+        $('html').load('goBoardOne.do',res,function(){
+          $('.box_category_name').html(res['category'])
+          $('.box_name_text').html(res['title'])
+          $('.box_days').html(moment(res['dt']).format('YYYY-MM-DD HH:mm'))
+          $('.user_name_para').html(res['regUser'])
+          $('.cont_para').html(res['viewCount'])
+          $('.board_detail').html(res['content'])
+          $('.file').html(res['fileName'])
+          $('.button_1').on('click',()=>{
+            location.href="goBoard.do"
+          })
+        });
+      }
+    })
+    */
   })
   
   
@@ -347,27 +352,29 @@ $(function() {
     localStorage.removeItem('boardId');
     location.href='goBoardOne.do'
     
-//     $('html').load('goBoardOne.do',function(){
-//       $('.wrap').wrap(`<form action="/boardInsertProc.do" method="post" enctype="multipart/form-data" id="boardInsertForm">`)
-//       $('.box_category_name').replaceWith(`<select name="category">
-//           <option value="" style="background-color: lightgrey" selected disabled>카테고리</option>
-//           <option value="JAU">자유게시판</option>
-//           <option value="JIL">질문게시판</option>
-//           <option value="DEV">개발포럼</option>
-//           <option value="DSN">등산포럼</option>
-//           <option value="JAN">장터</option>
-//         </select>`)
-//       $('.box_name_text').replaceWith(`<input name="title" type="text" placeholder="제목 입력" style="width: 100%" required>`)
-//       $('.box_days').html(moment().format('YYYY-MM-DD HH:mm'))
-//       $('.user_name_para').replaceWith(`<input name="regUser" type="text" placeholder="작성자 입력" required>`)
-//       $('.cont_para').html('1')
-//       $('.board_detail').replaceWith(`<textarea name="content" placeholder="내용 입력" style="width: 100%" rows="9" required>`)
-//       $('.button_1').on('click',()=>{
-//         location.href="goBoard.do"
-//       })
-//       $('.button_2').replaceWith(`<button type="submit" form="boardInsertForm" class="button_2">등록`)
+    /*
+    $('html').load('goBoardOne.do',function(){
+      $('.wrap').wrap(`<form action="/boardInsertProc.do" method="post" enctype="multipart/form-data" id="boardInsertForm">`)
+      $('.box_category_name').replaceWith(`<select name="category">
+          <option value="" style="background-color: lightgrey" selected disabled>카테고리</option>
+          <option value="JAU">자유게시판</option>
+          <option value="JIL">질문게시판</option>
+          <option value="DEV">개발포럼</option>
+          <option value="DSN">등산포럼</option>
+          <option value="JAN">장터</option>
+        </select>`)
+      $('.box_name_text').replaceWith(`<input name="title" type="text" placeholder="제목 입력" style="width: 100%" required>`)
+      $('.box_days').html(moment().format('YYYY-MM-DD HH:mm'))
+      $('.user_name_para').replaceWith(`<input name="regUser" type="text" placeholder="작성자 입력" required>`)
+      $('.cont_para').html('1')
+      $('.board_detail').replaceWith(`<textarea name="content" placeholder="내용 입력" style="width: 100%" rows="9" required>`)
+      $('.button_1').on('click',()=>{
+        location.href="goBoard.do"
+      })
+      $('.button_2').replaceWith(`<button type="submit" form="boardInsertForm" class="button_2">등록`)
       
-//     })
+    })
+    */
     
   })
   
@@ -377,7 +384,7 @@ $(function() {
 
 </script>
 
-<h1>게시글목록</h1>
+<!-- <h1>게시글목록</h1> -->
 
 <div class="container-fluid p-0">
   <div class="row justify-content-center m-0">

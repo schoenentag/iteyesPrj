@@ -101,15 +101,20 @@
 
 <!-- 게시글 단건 조회 -->
 <select id="boardOne" resultType="CustomMap">
+  update BOARD
+     set view_count = view_count + 1
+   where id = #{id};
   select *
     from BOARD
   <where>
-    id = #{id}
+    id = #{id};
   </where>
 </select>
 
 
 
+
+<!-- 게시글 등록 -->
 <sql id="idInsert">
   ,'-', (
     select lpad(MAX(substr(id,5))+1,5,0)
@@ -117,7 +122,6 @@
     where substr(id,1,3) = 
 </sql>
 
-<!-- 게시글 등록 -->
 <insert id="boardInsertProc" parameterType="map">
   insert into BOARD 
   values (
@@ -133,15 +137,36 @@
       <if test="id == 'DSN'">'등산포럼',</if>
       <if test="id == 'DEV'">'개발포럼',</if>
       <if test="id == 'JAN'">'장터',</if>
-    'n',
+    <if test="noticeYn == 'on'">'y',</if>
+    <if test="noticeYn == null">'n',</if>
     #{title},
     #{regUser},
     #{content},
     '123123',
     DEFAULT,
     1,
-    null);
+    #{fileName});
 </insert>
+
+
+
+<!-- 게시글 수정 -->
+<update id="boardUpdateProc" parameterType="map">
+  update BOARD
+     set notice_yn = 
+         <if test="noticeYn == 'on'">'y',</if>
+         <if test="noticeYn == null">'n',</if>
+         title = #{title},
+         content = #{content}
+   where id = #{id}
+</update>
+
+
+<!-- 게시글 삭제 -->
+<delete id="boardDelete">
+  delete from BOARD
+   where id = #{id}
+</delete>
 
 
 <select id="selectBoardList" resultType="CustomMap">

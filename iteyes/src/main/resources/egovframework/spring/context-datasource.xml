@@ -24,7 +24,7 @@
         <property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/>
         <!-- 2023.02.25 김하은 : 주소 변경 -->
         <!-- 2023.02.26.곽주엽 : log4jdbc 적용 -->
-        <property name="url" value="jdbc:log4jdbc:mariadb://iteyes4.cspsungx64ac.ap-northeast-2.rds.amazonaws.com/iteyes" />
+        <property name="url" value="jdbc:log4jdbc:mariadb://iteyes4.cspsungx64ac.ap-northeast-2.rds.amazonaws.com/iteyes?allowMultiQueries=true" />
         <property name="username" value="thunder"/>
         <property name="password" value="dkdlxldkdlwm"/>
     </bean>
