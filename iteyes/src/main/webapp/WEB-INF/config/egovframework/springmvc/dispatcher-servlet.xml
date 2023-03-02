@@ -76,6 +76,12 @@
         <property name="contentType" value="text/html;charset=UTF-8"/>
     </bean>
     
+    <!-- 23.03.02. 곽주엽 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver"></bean>
+    
+    
+    
+    
 	<!-- /For Pagination Tag -->
     <mvc:view-controller path="/cmmn/validator.do" view-name="cmmn/validator"/>
 </beans>

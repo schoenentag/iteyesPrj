@@ -16,7 +16,7 @@
 <body>
     <div class="wrap">
     
-      <form id='formBody' action="/boardInsertProc.do" method="post" >
+      <form id='formBody' action="/boardInsertProc.do" method="post" enctype="multipart/form-data" >
         <div class="header_wrap">
             <div class="header">
                 <div class="box_category_name"> 카테고리명 </div>
@@ -79,79 +79,108 @@
         <option value="DSN">등산포럼</option>
         <option value="JAN">장터</option>
       </select>`)
-    $('.box_name_text').replaceWith(`<input name="title" type="text" placeholder="제목 입력" style="width: 100%" required>`)
+    $('.box_name_text').replaceWith(`<input name="title" type="text" placeholder="제목 입력" style="width: 40%" required>`)
+    $('input[name="title"]').after(`<label style="font-size: large; margin: 10px;"><input id="noticeYn" name="noticeYn" type="checkbox">공지사항</label>`)
     $('.box_days').html(moment().format('YYYY-MM-DD HH:mm'))
     $('.user_name_para').replaceWith(`<input name="regUser" type="text" placeholder="작성자 입력" required>`)
     $('.cont_para').html('1')
     $('.board_detail').replaceWith(`<textarea name="content" placeholder="내용 입력" style="width: 100%" rows="9" required>`)
+    $('.file').replaceWith(`<label for="formFile">업로드</label>
+                            <input type="file" id="formFile" name="uploadFile">`)
     $('.button_1').on('click',()=>{
       location.href="goBoard.do"
     })
     $('.button_2').replaceWith(`<button class="button_2" type="submit" form="formBody">등록`)
+    $('.button_3').replaceWith(`<button class="button_3" onclick="history.back()">취소`)
     
   }
   
 
 // 게시글 단건 조회
-  $.ajax({
-    url: "boardOne.do?id="+localStorage.getItem('boardId'),
-    contentType :  'application/json; charset=utf-8',
-    success: function(res){
-      $('.box_category_name').html(res['category'])
-      $('.box_name_text').html(res['title'])
-      $('.box_days').html(moment(res['dt']).format('YYYY-MM-DD HH:mm'))
-      $('.user_name_para').html(res['regUser'])
-      $('.cont_para').html(res['viewCount'])
-      $('.board_detail').html(res['content'])
-      $('.file').html(res['fileName'])
-      $('.button_1').on('click',()=>{
-        location.href="goBoard.do"
-      })
-      
-      // 게시글 수정
-      $('.button_2').on('click',()=>{
-        $('.box_category_name').replaceWith(`<select name="id">
-            <option value="" style="background-color: lightgrey" disabled>카테고리</option>
-            <option value="JAU">자유게시판</option>
-            <option value="JIL">질문게시판</option>
-            <option value="DEV">개발포럼</option>
-            <option value="DSN">등산포럼</option>
-            <option value="JAN">장터</option>
-          </select>`)
+  if(localStorage.getItem('boardId')){
+    $.ajax({
+      url: "boardOne.do?id="+localStorage.getItem('boardId'),
+      success: function(res){
+        $('.box_category_name').html(res['category'])
+        $('.box_name_text').html(res['title']).css('width','40%')
+        if (res['noticeYn'] == 'y') {
+          $('.box_name_text').after(`<label style="font-size: large; margin: 10px;"><input id="noticeYn" name="noticeYn" type="checkbox" checked disabled>공지사항</label>`)
+        } else {
+          $('.box_name_text').after(`<label style="font-size: large; margin: 10px;"><input id="noticeYn" name="noticeYn" type="checkbox" disabled>공지사항</label>`)
+        }
+        $('.box_days').html(moment(res['dt']).format('YYYY-MM-DD HH:mm'))
+        $('.user_name_para').html(res['regUser'])
+        $('.cont_para').html(res['viewCount'])
+        $('.board_detail').html(res['content'])
+        if(!res['fileName']) {
+          $('.file').html('첨부파일이 없습니다')
+        } else {
+          $('.file').html(res['fileName']).css('margin-bottom', '5px')
+          $('.file').after(`<a href="downloadFile.do?downloadFile=${encodeURIComponent(res['fileName'])}" download
+              style="border: 1px solid; padding: 2px;">다운로드</a>`)
+        }
+        $('.button_1').on('click',()=>{
+          location.href="goBoard.do"
+        })
         
-          switch (res['category']){
-            case '자유게시판':
-              $('select[name="id"]').find('option:contains("자유게시판")').attr("selected",true);
-              break;
-            case '질문게시판':
-              $('select[name="id"]').find('option:contains("질문게시판")').attr("selected",true);
-              break;
-            case '개발포럼':
-              $('select[name="id"]').find('option:contains("개발포럼")').attr("selected",true);
-              break;
-            case '등산포럼':
-              $('select[name="id"]').find('option:contains("등산포럼")').attr("selected",true);
-              break;
-            case '장터':
-              $('select[name="id"]').find('option:contains("장터")').attr("selected",true);
-              break;
-          }
+        // 게시글 수정
+        $('.button_2').on('click',()=>{
+          $('#formBody').prop('action','/boardUpdateProc.do')
+          $('#formBody').append(`<input type="hidden" name="id" value=${localStorage.getItem('boardId')}>`)
+          
+          /*
+          $('.box_category_name').replaceWith(`<select name="id">
+              <option value="" style="background-color: lightgrey" disabled>카테고리</option>
+              <option value="JAU">자유게시판</option>
+              <option value="JIL">질문게시판</option>
+              <option value="DEV">개발포럼</option>
+              <option value="DSN">등산포럼</option>
+              <option value="JAN">장터</option>
+            </select>`)
+          
+            switch (res['category']){
+              case '자유게시판':
+                $('select[name="id"]').find('option:contains("자유게시판")').attr("selected",true);
+                break;
+              case '질문게시판':
+                $('select[name="id"]').find('option:contains("질문게시판")').attr("selected",true);
+                break;
+              case '개발포럼':
+                $('select[name="id"]').find('option:contains("개발포럼")').attr("selected",true);
+                break;
+              case '등산포럼':
+                $('select[name="id"]').find('option:contains("등산포럼")').attr("selected",true);
+                break;
+              case '장터':
+                $('select[name="id"]').find('option:contains("장터")').attr("selected",true);
+                break;
+            }
+          */
+          
+          $('.box_name_text').replaceWith(`<input name="title" type="text" value=${res['title']} style="width: 40%" required>`)
+          $('#noticeYn').removeAttr('disabled')
+          $('.board_detail').replaceWith(`<textarea name="content" style="width: 100%" rows="9" required>${res['content']}`)
+          $('.button_2').replaceWith(`<button class="button_2" type="submit" form="formBody">수정`)
+          $('.button_3').replaceWith(`<button class="button_3" onclick="history.back()">취소`)
+            
+        })
         
-        $('.box_name_text').replaceWith(`<input name="title" type="text" value=${res['title']} style="width: 100%" required>`)
-//         $('.box_days').html(moment().format('YYYY-MM-DD HH:mm'))
-        $('.user_name_para').replaceWith(`<input name="regUser" type="text" value=${res['regUser']} readonly>`)
-//         $('.cont_para').html('1')
-        $('.board_detail').replaceWith(`<textarea name="content" value=${res['content']} style="width: 100%" rows="9" required>`)
-        $('.button_2').replaceWith(`<button class="button_2" type="submit" form="formBody">수정`)
-          
-          
-          
-          
-          
+        // 게시글 삭제
+        $('.button_3').on('click',()=>{
+          $.ajax({
+            url: "boardDelete.do?id="+localStorage.getItem('boardId'),
+            success: () => {
+              localStorage.removeItem('boardId');
+              window.location.href='/goBoard.do' 
+            },
+          })
+        })
         
-      })
-    }
-  })
+        
+        
+      } // End: ajax.success
+    }) // End: ajax
+  }
   
   
   
@@ -177,7 +206,7 @@
     function getCommPage(boardId,parentId){
     	let parent = document.querySelector('#comment_list');
         parent.textContent = '';    //기존 리스트 삭제
-        let url = `http://127.0.0.1:8081/comment/getList.do?boardId=${boardId}&parentId=0&pageNum=${commCurrentPage}`
+        let url = `/comment/getList.do?boardId=${boardId}&parentId=0&pageNum=${commCurrentPage}`
         $.ajax({
             type: 'get',
             url : url,
@@ -284,7 +313,7 @@
             commentInfo.parentId = parentId;
             $.ajax({
 	            type: 'post',
-	            url : `http://127.0.0.1:8081/comment/insert.do`,
+	            url : `/comment/insert.do`,
 	            data : JSON.stringify(commentInfo),
 	            contentType :  'application/json; charset=utf-8',
 	            datatype: "json",
@@ -320,7 +349,7 @@
         commentInfo.content = content.value;
         $.ajax({
             type: 'post',
-            url : `http://127.0.0.1:8081/comment/update.do`,
+            url : `/comment/update.do`,
             data : JSON.stringify(commentInfo),
             contentType :  'application/json; charset=utf-8',
             datatype: "json",
@@ -346,7 +375,7 @@
             if (result.isConfirmed) {       //confirm
                 $.ajax({
                     type: 'post',
-                    url : `http://127.0.0.1:8081/comment/delete.do`,
+                    url : `/comment/delete.do`,
                     data : JSON.stringify(commentInfo),
                     contentType :  'application/json; charset=utf-8',
                     datatype: "json",
@@ -365,7 +394,7 @@
         console.log(parentId)
         $.ajax({
             type: 'get',
-            url : `http://127.0.0.1:8081/comment/getList.do?boardId=${commentInfo.boardId}&parentId=${parentId}&pageNum=-1`,
+            url : `/comment/getList.do?boardId=${commentInfo.boardId}&parentId=${parentId}&pageNum=-1`,
             datatype: "json",
             success : function(data) {
                 console.log('ajax 통신 성공');
