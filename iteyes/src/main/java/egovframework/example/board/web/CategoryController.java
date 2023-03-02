@@ -35,8 +35,7 @@ public class CategoryController {
 	@ResponseBody
 	@RequestMapping("/jsonCategoryList.do")
 	public List<Map<String,String>>jsonCategoryList(@RequestBody Map<String,Integer> map) throws Exception{
-		System.out.println("jsonCategoryList contoller 실행");
-		System.out.println("LLLLLLLLLLLLLLLLLLLLLLLLLLLIST /jsonCategoryList.do curPage: " + map.get("curPage"));
+		System.out.println("==========================jsonCategoryList contoller 실행");
 		/*전체글 갯수 조회*/
 		int curPage = 1;
 		int listCnt = categoryService.CategoryListyCnt();
@@ -59,6 +58,7 @@ public class CategoryController {
 	@ResponseBody
 	@RequestMapping("/pagination.do")
 	public Pagination pagination(@RequestParam(defaultValue="1") int curPage) throws Exception{
+		System.out.println("==========================pagination 실행");
 		/*전체글 갯수 조회*/
 		int listCnt = categoryService.CategoryListyCnt();
 		/*pagination 인스턴스 생성 (param :  전체 개시글 개수, 현재 페이지*/ 
@@ -70,6 +70,7 @@ public class CategoryController {
 	@ResponseBody
 	@RequestMapping(value="/paginationMove.do")
 	public Pagination paginationMove(@RequestBody Map<String,Integer> map) throws Exception{
+		System.out.println("==========================paginationMove 실행");
 		
 		/*전체글 갯수 조회*/
 		int listCnt = categoryService.CategoryListyCnt();
