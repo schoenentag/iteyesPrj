@@ -117,10 +117,12 @@ let searchKey = {"key" : key, "value" : value};
 			            
 			        	/* 현재 페이지가 1이 아니라면 
 			        	    <<(1 page) , <(이전페이지 prevPage = curPage -1) 출력 */
+			        	    /*
 			            if(res.curRange != 1){
 				            board_html+= `<a href="#" class="bt first" id="first" onClick="fn_paging(1)" data-value="1"><<</a> 
 				                           <a href="#" class="bt prev" id="prev" onClick="fn_paging('${res.prevPage}')" data-value="${res.prevPage}"><</a>`;
 			            } 
+			        	*/
 			            /* 페이지 번호 생성 (클릭된 번호는 배경색표시) */    		  
 			            for (let i = res.startPage; i <= res.endPage; i++){
 			            	//console.log(" '/pagination.do' res.curPage : "+ res.curPage);
@@ -132,10 +134,12 @@ let searchKey = {"key" : key, "value" : value};
 			            }
 			            /* 현재 페이지가 총 페이지 수(pageCnt) 값이 아니면서 총 페이지 수가 0 보다 클때 
 			                > (다음 페이지 curPage +), >> (마지막페이지) 출력 */
+			                /*
 			            if( res.curPage != res.pageCnt & res.pageCnt > 0 ){
 			                board_html+=`<a href="#" class="bt next" id="next" onClick="fn_paging('${res.nextPage }')" data-value="${res.nextPage }">></a>
 			                             <a href="#" class="bt last" id="last" onClick="fn_paging('${res.pageCnt  }')" data-value="${res.pageCnt }">>></a>`;
 			            }
+			                */
 			            $(".board_page").append(board_html);
 			        },
 			        fail: function(result) {

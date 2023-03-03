@@ -123,6 +123,10 @@
     background-color: #f0f2f5;
   }
   
+  tr:has(.noticeY) {
+    font-weight: bold;
+  }
+  
 </style>
 </head>
 
@@ -151,11 +155,16 @@ $(function() {
     columns: [
       {data: 'id', className: 'dt-center'},
       {data: 'category', className: 'dt-center'},
-      {data: 'noticeYn', className: 'dt-center'},
-      {data: 'title', render: $.fn.dataTable.render.ellipsis( 10 ), defaultContent: ''}, // defaultContent: null값 처리(경고 alert 방지)
-      {data: 'content', render: $.fn.dataTable.render.ellipsis( 30 ), defaultContent: ''},
+      {data: 'noticeYn', className: 'dt-center', render: function(data,type,row){
+        if(data == 'y'){
+          return '<span class="noticeY">'+data
+        }
+        return data;
+      }},
+      {data: 'title', render: $.fn.dataTable.render.ellipsis( 50 ), defaultContent: ''}, // defaultContent: null값 처리(경고 alert 방지)
+      {data: 'content', render: $.fn.dataTable.render.ellipsis( 60 ), defaultContent: '', visible: false},
       {data: 'regUser', className: 'dt-center'},
-      {data: 'dt', className: 'dt-center', render: $.fn.dataTable.render.moment('x','YYYY-MM-DD HH:mm:ss','ko')},
+      {data: 'dt', className: 'dt-center', render: $.fn.dataTable.render.moment('x','YYYY-MM-DD HH:mm','ko')},
       {data: 'viewCount', className: 'dt-center'},
       {data: 'fileName', render: $.fn.dataTable.render.ellipsis( 10 ), defaultContent: ''},
       {data: 'pw', className: 'dt-center', visible: false},
@@ -164,7 +173,7 @@ $(function() {
       return: true,
     },
     searchCols: [null, {search: localStorage.getItem('category')}], // 초기 로딩시
-    order: [2, 'desc'], 
+    order: [[0, 'desc'],[2, 'desc']], 
     
     dom: "<'row'<'col-12 col-sm-4' l ><'col-12 col-sm-8 text-end pe-4' B >>" +
          "<'row'< tr >>" +
@@ -388,14 +397,14 @@ $(function() {
 <div class="container-fluid p-0">
   <div class="row justify-content-center m-0">
     <div class="card p-3 m-3 border border-5">
-<!--       <div class="table-responsive"> -->
+      <div class="table-responsive">
       
-        <table id="boardInfos" class="table align-items-center table-hover" style="width:100%">
+        <table id="boardInfos" class="table align-items-center table-hover" style="width:100%; font-size: 12px">
           <thead>
-            <tr style="height: 70px">
-              <th class="text-center" id="th0">
+            <tr style="height: 50px">
+              <th class="text-center" style="width:10%" id="th0">
                 <span>글번호</span>
-                <input style="width: 60px" type="text"  onfocus="this.select()" placeholder="글번호">
+                <input style="width: 50px" type="text"  onfocus="this.select()" placeholder="글번호">
                 <!-- 방법1: 요소 사이즈로 조절 → 주변 요소들의 크기,위치 등이 영향받음(안 받으려면 div로 감싸고 너비지정 해줘야 함)-->
                 <!-- 방법2: transform:scale()로 확대 → 주변 레이아웃 영향 안받고 지만 확대됨 -->
                 <!--  *마찬가지로 border속성과 outline속성 간 관계도 비슷함 -->
@@ -403,9 +412,9 @@ $(function() {
                   <i class="fa-solid fa-magnifying-glass"></i>
                 </div>
               </th>
-              <th class="text-center" id="th1">
+              <th class="text-center" style="width:10%" id="th1">
                 <span>카테고리</span>
-                <select style="width: 60px">
+                <select style="width: 50px">
                   <option value="">카테고리</option>
                   <option value="자유게시판">자유게시판</option>
                   <option value="질문게시판">질문게시판</option>
@@ -417,9 +426,9 @@ $(function() {
                   <i class="fa-solid fa-magnifying-glass"></i>
                 </div>
               </th>
-              <th class="text-center" id="th2">
+              <th class="text-center" style="width:7%" id="th2">
                 <span>공지</span>
-                <select style="width: 50px">
+                <select style="width: 40px">
                   <option value="">공지</option>
                   <option value="Y">Y</option>
                   <option value="N">N</option>
@@ -428,23 +437,23 @@ $(function() {
                   <i class="fa-solid fa-magnifying-glass"></i>
                 </div>
               </th>
-              <th class="text-center" id="th3">
+              <th class="text-center" style="width: 35%" id="th3">
                 <span>제목</span>
-                <input style="width: 60px" type="text"  onfocus="this.select()" placeholder="제목">
+                <input style="width: 120px" type="text"  onfocus="this.select()" placeholder="제목">
                 <div class="d-inline-block" style="width: 20px"> 
                   <i class="fa-solid fa-magnifying-glass"></i>
                 </div>
               </th>
-              <th class="text-center" id="th4">
+              <th class="text-center" style="width: 25%" id="th4">
                 <span>내용</span>
                 <input style="width: 120px" type="text" onfocus="this.select()" placeholder="내용">
                 <div class="d-inline-block" style="width: 20px"> 
                   <i class="fa-solid fa-magnifying-glass"></i>
                 </div>
               </th>
-              <th class="text-center" id="th5">
+              <th class="text-center" style="width: 10%" id="th5">
                 <span>작성자</span>
-                <input style="width: 60px" type="text" onfocus="this.select()" placeholder="작성자">
+                <input style="width: 50px" type="text" onfocus="this.select()" placeholder="작성자">
                 <div class="d-inline-block" style="width: 20px"> 
                   <i class="fa-solid fa-magnifying-glass"></i>
                 </div>
@@ -465,7 +474,7 @@ $(function() {
               </th>
               <th class="text-center" id="th8">
                 <span>첨부파일</span>
-                <input style="width: 60px" type="text" onfocus="this.select()" placeholder="첨부파일">
+                <input style="width: 50px" type="text" onfocus="this.select()" placeholder="첨부파일">
                 <div class="d-inline-block" style="width: 20px"> 
                   <i class="fa-solid fa-magnifying-glass"></i>
                 </div>

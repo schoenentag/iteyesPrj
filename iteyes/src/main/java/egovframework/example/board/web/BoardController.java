@@ -52,10 +52,17 @@ public class BoardController {
     @RequestMapping("/boardInfoProc.do")
     @ResponseBody
     public DataTableVO boardInfoProc(DataTableVO vo, @RequestParam Map<String,String> formData) {
+        
+        Map<String, Comparable> cri = new HashMap<String, Comparable>();
+        
         int draw = Integer.parseInt(formData.get("draw")); // 필수
         int start = Integer.parseInt(formData.get("start")); // 현 페이지의 첫 레코드의 순번(전체 레코드 중)
         int length = Integer.parseInt(formData.get("length")); // 페이지 당 레코드 수
         int order = Integer.parseInt(formData.get("order[0][column]")); // 정렬칼럼번호
+        if(formData.get("order[1][column]") != null) {
+            int orderY = Integer.parseInt(formData.get("order[1][column]")); // 정렬칼럼번호
+            cri.put("orderY", orderY);
+        }
         String orderDir = formData.get("order[0][dir]"); // 정렬방향(오름,내림차순)
         String uType = formData.get("uType"); // 카테고리 구분
 
@@ -77,7 +84,7 @@ public class BoardController {
         System.out.println(uType + " ▶ 카테고리 구분" );
 
         // Map에 담기
-        Map<String, Comparable> cri = new HashMap<String, Comparable>();
+        
         cri.put("start", start);
         cri.put("length", length);
         cri.put("order", order);
